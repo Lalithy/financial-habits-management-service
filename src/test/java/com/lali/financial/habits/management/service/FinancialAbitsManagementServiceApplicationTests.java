@@ -1,4 +1,4 @@
-package com.lali.financial_abits_management_service;
+package com.lali.financial.habits.management.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

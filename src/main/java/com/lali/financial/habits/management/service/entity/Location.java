@@ -1,4 +1,4 @@
-package com.lali.financial_abits_management_service.entity;
+package com.lali.financial.habits.management.service.entity;
 
 /* ==================================================
  * Author: Lali..

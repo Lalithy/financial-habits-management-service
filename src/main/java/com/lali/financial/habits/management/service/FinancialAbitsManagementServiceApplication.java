@@ -1,4 +1,4 @@
-package com.lali.financial_abits_management_service;
+package com.lali.financial.habits.management.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
