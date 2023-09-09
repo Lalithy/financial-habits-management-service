@@ -27,7 +27,7 @@ public class ExpensesController {
     private final ExpensesService expensesService;
 
     /**
-     * The API creates a expenses category
+     * The API creates an expenses category
      *
      * @param expensesCategoryDTO -> {expensesCategoryName}
      * @return ResponseEntity<String>

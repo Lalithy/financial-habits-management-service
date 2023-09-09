@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 public interface ExpensesService {
 
     /**
-     * The method creates a expenses category
+     * The method creates an expenses category
      *
      * @param expensesCategoryDTO -> {expensesCategoryName}
      * @return ResponseEntity<String>
