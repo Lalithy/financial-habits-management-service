@@ -1,17 +1,17 @@
-package com.lali.financial_abits_management_service.repository;
+package com.lali.financial.habits.management.service.repository;
 
 /* ==================================================
  * Author: Lali..
  * Created Date: 9/9/2023
  * Project: financial-habits-management-service
- * Description: GuestUserRepository
+ * Description: ExpensesRepository
  * ==================================================
  **/
 
-import com.lali.financial_abits_management_service.entity.GuestUser;
+import com.lali.financial.habits.management.service.entity.Expenses;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GuestUserRepository extends JpaRepository<GuestUser, Integer> {
+public interface ExpensesRepository extends JpaRepository<Expenses, Integer> {
 }
