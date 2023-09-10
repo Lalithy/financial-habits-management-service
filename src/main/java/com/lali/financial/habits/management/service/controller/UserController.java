@@ -2,15 +2,15 @@ package com.lali.financial.habits.management.service.controller;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/9/2023
+ * Created Date: 9/10/2023
  * Project: financial-habits-management-service
- * Description: ExpensesController
+ * Description: UserController
  * ==================================================
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestExpensesCategoryDTO;
-import com.lali.financial.habits.management.service.service.ExpensesService;
+import com.lali.financial.habits.management.service.dto.RequestUserDTO;
+import com.lali.financial.habits.management.service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,25 +22,23 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/fhms/income")
+@RequestMapping("/api/fhms/user")
 @RequiredArgsConstructor
 @Slf4j
-public class ExpensesController {
+public class UserController {
 
-    private final ExpensesService expensesService;
+    private final UserService userService;
 
     /**
-     * The API creates an expenses category
+     * The API creates a user
      *
-     * @param expensesCategoryDTO -> {expensesCategoryName}
+     * @param userDTO -> {email, password, confirmPassword}
      * @return ResponseEntity<String>
      * @author Lali..
      */
-    @PostMapping("/add_expenses_category")
-    public ResponseEntity<String> addExpensesCategory(@Valid @RequestBody RequestExpensesCategoryDTO expensesCategoryDTO) {
-        log.info("ExpensesController.addExpensesCategory API : {}", MessageConstants.ACCESSED);
-        return expensesService.addExpensesCategory(expensesCategoryDTO);
+    @PostMapping("/register_user")
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RequestUserDTO userDTO) {
+        log.info("UserController.registerUser API : {}", MessageConstants.ACCESSED);
+        return userService.registerUser(userDTO);
     }
-
-
 }

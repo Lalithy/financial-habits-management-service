@@ -14,4 +14,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GuestUserRepository extends JpaRepository<GuestUser, Integer> {
+
+    boolean existsByEmailIgnoreCase(String email);
 }
