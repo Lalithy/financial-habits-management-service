@@ -36,8 +36,8 @@ public class Expenses {
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "expenses_category_id", nullable = false)
-    private ExpensesCategory expensesCategory;
+    @JoinColumn(name = "budget_category_id", nullable = false)
+    private BudgetCategory budgetCategory;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "user_id", nullable = false)

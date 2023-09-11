@@ -9,7 +9,7 @@ package com.lali.financial.habits.management.service.controller;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestExpensesCategoryDTO;
+import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
 import com.lali.financial.habits.management.service.service.ExpensesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +30,16 @@ public class ExpensesController {
     private final ExpensesService expensesService;
 
     /**
-     * The API creates an expenses category
+     * The API creates a budget category
      *
-     * @param expensesCategoryDTO -> {expensesCategoryName}
+     * @param expensesCategoryDTO -> {budgetCategoryName}
      * @return ResponseEntity<String>
      * @author Lali..
      */
-    @PostMapping("/add_expenses_category")
-    public ResponseEntity<String> addExpensesCategory(@Valid @RequestBody RequestExpensesCategoryDTO expensesCategoryDTO) {
-        log.info("ExpensesController.addExpensesCategory API : {}", MessageConstants.ACCESSED);
-        return expensesService.addExpensesCategory(expensesCategoryDTO);
+    @PostMapping("/add_budget_category")
+    public ResponseEntity<String> addBudgetCategory(@Valid @RequestBody RequestBudgetCategoryDTO expensesCategoryDTO) {
+        log.info("ExpensesController.addBudgetCategory API : {}", MessageConstants.ACCESSED);
+        return expensesService.addBudgetCategory(expensesCategoryDTO);
     }
 
 
