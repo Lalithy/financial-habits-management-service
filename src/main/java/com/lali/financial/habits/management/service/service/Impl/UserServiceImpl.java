@@ -9,8 +9,7 @@ package com.lali.financial.habits.management.service.service.Impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestUserDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
 import com.lali.financial.habits.management.service.service.UserService;
@@ -62,6 +61,25 @@ public class UserServiceImpl implements UserService {
             log.error("UserServiceImpl.registerUser Method : {}", exception.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.FAILED_USER_REGISTRATION);
         }
+    }
+
+    /**
+     * The method provides login authentication
+     *
+     * @param userDTO -> {email, password}
+     * @return ResponseEntity<String>
+     */
+    @Override
+    public ResponseEntity<String> loginUser(RequestUserLoginDTO userDTO) {
+
+        log.info("UserServiceImpl.loginUser Method : {}", MessageConstants.ACCESSED);
+        UserDTOI userByEmailAndIsActive = userRepository.findGuestUserByEmailAndIsActive(userDTO.getEmail(), true);
+        if (userByEmailAndIsActive.getPassword().equals(userDTO.getPassword())) {
+            return ResponseEntity.ok(MessageConstants.LOGIN_SUCCESSFUL);
+        } else {
+            return ResponseEntity.badRequest().body(MessageConstants.AUTHENTICATION_FAILED);
+        }
+
     }
 
     /**

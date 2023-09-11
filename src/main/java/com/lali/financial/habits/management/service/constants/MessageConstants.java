@@ -23,4 +23,7 @@ public class MessageConstants {
     public static final String INVALID_PASSWORD = "Invalid Password!";
     public static final String INVALID_CONFIRM_PASSWORD = "Invalid ConfirmPassword!";
     public static final String THE_PASSWORD_CONFIRMATION_DOES_NOT_MATCH = "The password confirmation doesn't match";
+    public static final String LOGIN_SUCCESSFUL = "Login Successful!";
+    public static final String AUTHENTICATION_FAILED = "Authentication Failed!";
+
 }

@@ -9,6 +9,7 @@ package com.lali.financial.habits.management.service.service;
  **/
 
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
+import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -22,4 +23,11 @@ public interface UserService {
      */
     ResponseEntity<String> registerUser(RequestUserDTO userDTO);
 
+    /**
+     * The method provides login authentication
+     *
+     * @param userDTO -> {email, password}
+     * @return ResponseEntity<String>
+     */
+    ResponseEntity<String> loginUser(RequestUserLoginDTO userDTO);
 }

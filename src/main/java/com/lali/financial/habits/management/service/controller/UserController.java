@@ -10,6 +10,7 @@ package com.lali.financial.habits.management.service.controller;
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
+import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import com.lali.financial.habits.management.service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +41,17 @@ public class UserController {
     public ResponseEntity<String> registerUser(@Valid @RequestBody RequestUserDTO userDTO) {
         log.info("UserController.registerUser API : {}", MessageConstants.ACCESSED);
         return userService.registerUser(userDTO);
+    }
+
+    /**
+     * The API provides login authentication
+     *
+     * @param userDTO -> {email, password}
+     * @return ResponseEntity<String>
+     */
+    @PostMapping("/login_user")
+    public ResponseEntity<String> loginUser(@Valid @RequestBody RequestUserLoginDTO userDTO) {
+        log.info("UserController.loginUser API : {}", MessageConstants.ACCESSED);
+        return userService.loginUser(userDTO);
     }
 }
