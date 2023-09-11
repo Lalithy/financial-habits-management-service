@@ -35,6 +35,6 @@ public class GuestUser {
             name = "user_expenses_category",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "expenses_category_id"))
-    private Set<ExpensesCategory> categories;
+    private Set<BudgetCategory> categories;
 
 }

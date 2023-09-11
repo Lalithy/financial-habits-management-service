@@ -9,9 +9,9 @@ package com.lali.financial.habits.management.service.service.Impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestExpensesCategoryDTO;
-import com.lali.financial.habits.management.service.entity.ExpensesCategory;
-import com.lali.financial.habits.management.service.repository.ExpensesCategoryRepository;
+import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
+import com.lali.financial.habits.management.service.entity.BudgetCategory;
+import com.lali.financial.habits.management.service.repository.BudgetCategoryRepository;
 import com.lali.financial.habits.management.service.service.ExpensesService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
@@ -25,41 +25,41 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ExpensesImpl implements ExpensesService {
 
-    private final ExpensesCategoryRepository expensesCategoryRepository;
+    private final BudgetCategoryRepository budgetCategoryRepository;
 
 
     /**
-     * The method creates an expenses category
+     * The method creates an budget category
      *
-     * @param expensesCategoryDTO -> {expensesCategoryName}
+     * @param budgetCategoryDTO -> {budgetCategoryName}
      * @return ResponseEntity<String>
      * @author Lali..
      */
     @Override
-    public ResponseEntity<String> addExpensesCategory(RequestExpensesCategoryDTO expensesCategoryDTO) {
+    public ResponseEntity<String> addBudgetCategory(RequestBudgetCategoryDTO budgetCategoryDTO) {
 
-        log.info("ExpensesImpl.addExpensesCategory Method : {}", MessageConstants.ACCESSED);
+        log.info("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.ACCESSED);
         try {
-            boolean isInvalidExpensesCategory = CommonUtilities.isNullEmptyBlank(expensesCategoryDTO.getExpensesCategoryName());
-            if (isInvalidExpensesCategory) {
-                log.warn("ExpensesImpl.addExpensesCategory Method : {}", MessageConstants.VALIDATION_FAILED);
+            boolean isInvalidBudgetCategory = CommonUtilities.isNullEmptyBlank(budgetCategoryDTO.getBudgetCategoryName());
+            if (isInvalidBudgetCategory) {
+                log.warn("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.VALIDATION_FAILED);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.VALIDATION_FAILED);
             }
 
-            boolean existsByExpensesCategoryName = expensesCategoryRepository.existsByExpensesCategoryNameIgnoreCase(expensesCategoryDTO.getExpensesCategoryName());
-            if (existsByExpensesCategoryName) {
-                log.warn("ExpensesImpl.addExpensesCategory Method : {}", MessageConstants.ALREADY_EXISTS_RECORD);
+            boolean existsByBudgetCategoryName = budgetCategoryRepository.existsByBudgetCategoryNameIgnoreCase(budgetCategoryDTO.getBudgetCategoryName());
+            if (existsByBudgetCategoryName) {
+                log.warn("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.ALREADY_EXISTS_RECORD);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.ALREADY_EXISTS_RECORD);
             }
 
-            ExpensesCategory expensesCategory = ExpensesCategory.builder()
-                    .expensesCategoryName(expensesCategoryDTO.getExpensesCategoryName())
+            BudgetCategory budgetCategory = BudgetCategory.builder()
+                    .budgetCategoryName(budgetCategoryDTO.getBudgetCategoryName())
                     .build();
-            expensesCategoryRepository.save(expensesCategory);
+            budgetCategoryRepository.save(budgetCategory);
             return ResponseEntity.status(HttpStatus.OK).body(MessageConstants.SUCCESSFULLY_CREATED);
 
         } catch (RuntimeException exception) {
-            log.error("ExpensesImpl.addExpensesCategory Method : {}", exception.getMessage());
+            log.error("ExpensesImpl.addBudgetCategory Method : {}", exception.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.FAILED_INSERTING);
         }
     }

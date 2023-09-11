@@ -4,7 +4,7 @@ package com.lali.financial.habits.management.service.entity;
  * Author: Lali..
  * Created Date: 9/9/2023
  * Project: financial-habits-management-service
- * Description: ExpensesCategory
+ * Description: BudgetCategory
  * ==================================================
  **/
 
@@ -19,12 +19,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-public class ExpensesCategory {
+public class BudgetCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer expensesCategoryId;
-    private String expensesCategoryName;
+    private Integer budgetCategoryId;
+    private String budgetCategoryName;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     private Set<GuestUser> users;

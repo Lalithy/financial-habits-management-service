@@ -8,9 +8,11 @@ package com.lali.financial.habits.management.service.controller;
  * ==================================================
  **/
 
-import com.lali.financial.habits.management.service.dto.RequestExpensesCategoryDTO;
+import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
 import com.lali.financial.habits.management.service.service.ExpensesService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,20 +24,22 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/fhms/income")
 @RequiredArgsConstructor
+@Slf4j
 public class ExpensesController {
 
     private final ExpensesService expensesService;
 
     /**
-     * The API creates an expenses category
+     * The API creates a budget category
      *
-     * @param expensesCategoryDTO -> {expensesCategoryName}
+     * @param budgetCategoryDTO -> {budgetCategoryName}
      * @return ResponseEntity<String>
      * @author Lali..
      */
-    @PostMapping("/add_expenses_category")
-    public ResponseEntity<String> addExpensesCategory(@Valid @RequestBody RequestExpensesCategoryDTO expensesCategoryDTO) {
-        return expensesService.addExpensesCategory(expensesCategoryDTO);
+    @PostMapping("/add_budget_category")
+    public ResponseEntity<String> addBudgetCategory(@Valid @RequestBody RequestBudgetCategoryDTO budgetCategoryDTO) {
+        log.info("ExpensesController.addBudgetCategory API : {}", MessageConstants.ACCESSED);
+        return expensesService.addBudgetCategory(budgetCategoryDTO);
     }
 
 

@@ -2,9 +2,9 @@ package com.lali.financial.habits.management.service.entity;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/9/2023
+ * Created Date: 9/11/2023
  * Project: financial-habits-management-service
- * Description: Expenses
+ * Description: Budget
  * ==================================================
  **/
 
@@ -21,19 +21,13 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @DynamicUpdate
-public class Expenses {
+public class Budget {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer expensesId;
-    private String expensesDetails;
-    private Double expensesAmount;
-    private LocalDateTime expensesDate;
-    private String expensesDescription;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+    private Integer budgetId;
+    private Double budgetAmount;
+    private LocalDateTime budgetDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "budget_category_id", nullable = false)

@@ -4,7 +4,7 @@ package com.lali.financial.habits.management.service.dto;
  * Author: Lali..
  * Created Date: 9/9/2023
  * Project: financial-habits-management-service
- * Description: RequestExpenses
+ * Description: RequestBudgetCategoryDTO
  * ==================================================
  **/
 
@@ -20,12 +20,12 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestExpensesCategoryDTO implements Serializable {
+public class RequestBudgetCategoryDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8935051445667381498L;
 
-    private Integer expensesCategoryId;
-    private String expensesCategoryName;
+    private Integer budgetCategoryId;
+    private String budgetCategoryName;
 
 }
