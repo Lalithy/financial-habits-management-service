@@ -32,14 +32,14 @@ public class ExpensesController {
     /**
      * The API creates a budget category
      *
-     * @param expensesCategoryDTO -> {budgetCategoryName}
+     * @param budgetCategoryDTO -> {budgetCategoryName}
      * @return ResponseEntity<String>
      * @author Lali..
      */
     @PostMapping("/add_budget_category")
-    public ResponseEntity<String> addBudgetCategory(@Valid @RequestBody RequestBudgetCategoryDTO expensesCategoryDTO) {
+    public ResponseEntity<String> addBudgetCategory(@Valid @RequestBody RequestBudgetCategoryDTO budgetCategoryDTO) {
         log.info("ExpensesController.addBudgetCategory API : {}", MessageConstants.ACCESSED);
-        return expensesService.addBudgetCategory(expensesCategoryDTO);
+        return expensesService.addBudgetCategory(budgetCategoryDTO);
     }
 
 

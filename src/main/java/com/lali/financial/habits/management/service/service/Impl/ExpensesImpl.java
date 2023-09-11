@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ExpensesImpl implements ExpensesService {
 
-    private final BudgetCategoryRepository expensesCategoryRepository;
+    private final BudgetCategoryRepository budgetCategoryRepository;
 
 
     /**
@@ -40,22 +40,22 @@ public class ExpensesImpl implements ExpensesService {
 
         log.info("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.ACCESSED);
         try {
-            boolean isInvalidExpensesCategory = CommonUtilities.isNullEmptyBlank(budgetCategoryDTO.getBudgetCategoryName());
-            if (isInvalidExpensesCategory) {
+            boolean isInvalidBudgetCategory = CommonUtilities.isNullEmptyBlank(budgetCategoryDTO.getBudgetCategoryName());
+            if (isInvalidBudgetCategory) {
                 log.warn("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.VALIDATION_FAILED);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.VALIDATION_FAILED);
             }
 
-            boolean existsByExpensesCategoryName = expensesCategoryRepository.existsByBudgetCategoryNameIgnoreCase(budgetCategoryDTO.getBudgetCategoryName());
-            if (existsByExpensesCategoryName) {
+            boolean existsByBudgetCategoryName = budgetCategoryRepository.existsByBudgetCategoryNameIgnoreCase(budgetCategoryDTO.getBudgetCategoryName());
+            if (existsByBudgetCategoryName) {
                 log.warn("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.ALREADY_EXISTS_RECORD);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.ALREADY_EXISTS_RECORD);
             }
 
-            BudgetCategory expensesCategory = BudgetCategory.builder()
+            BudgetCategory budgetCategory = BudgetCategory.builder()
                     .budgetCategoryName(budgetCategoryDTO.getBudgetCategoryName())
                     .build();
-            expensesCategoryRepository.save(expensesCategory);
+            budgetCategoryRepository.save(budgetCategory);
             return ResponseEntity.status(HttpStatus.OK).body(MessageConstants.SUCCESSFULLY_CREATED);
 
         } catch (RuntimeException exception) {
