@@ -12,7 +12,7 @@ public class MessageConstants {
     private MessageConstants() {}
 
     public static final String ACCESSED = "Accessed!";
-    public static final String SUCCESSFULLY_CREATED = "Successfully Created!";
+    public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
     public static final String SUCCESSFULLY_UPDATED = "Successfully Updated!";
     public static final String ALREADY_EXISTS_RECORD = "Already Exists Record!";
     public static final String ALREADY_EXISTS_USER = "Already Exists User!";
