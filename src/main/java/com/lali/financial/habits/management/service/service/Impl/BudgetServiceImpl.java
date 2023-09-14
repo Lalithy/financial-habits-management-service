@@ -4,15 +4,17 @@ package com.lali.financial.habits.management.service.service.Impl;
  * Author: Lali..
  * Created Date: 9/9/2023
  * Project: financial-habits-management-service
- * Description: ExpensesImpl
+ * Description: BudgetServiceImpl
  * ==================================================
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryDTOI;
 import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
+import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.repository.BudgetCategoryRepository;
-import com.lali.financial.habits.management.service.service.ExpensesService;
+import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +22,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ExpensesImpl implements ExpensesService {
+public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetCategoryRepository budgetCategoryRepository;
 
@@ -62,6 +67,29 @@ public class ExpensesImpl implements ExpensesService {
             log.error("ExpensesImpl.addBudgetCategory Method : {}", exception.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.FAILED_INSERTING);
         }
+    }
+
+    @Override
+    public ResponseEntity<ResponseDTO> getAllBudgetCategories() {
+
+        log.info("ExpensesImpl.getAllBudgetCategories Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findAllByOrderByBudgetCategoryName();
+
+        if (allBudgetCategories.isEmpty()) {
+            log.warn("ExpensesImpl.getAllBudgetCategories Method : {}", MessageConstants.BUDGET_CATEGORY_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET_CATEGORIES);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_BUDGET_CATEGORIES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(allBudgetCategories);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+
     }
 
 }

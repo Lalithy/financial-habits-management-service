@@ -8,6 +8,7 @@ package com.lali.financial.habits.management.service.service;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +19,16 @@ public interface UserService {
      * The method creates a user
      *
      * @param userDTO -> {email, password, confirmPassword}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
-    ResponseEntity<String> registerUser(RequestUserDTO userDTO);
+    ResponseEntity<ResponseDTO> registerUser(RequestUserDTO userDTO);
 
     /**
      * The method provides login authentication
      *
      * @param userDTO -> {email, password}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      */
-    ResponseEntity<String> loginUser(RequestUserLoginDTO userDTO);
+    ResponseEntity<ResponseDTO> loginUser(RequestUserLoginDTO userDTO);
 }

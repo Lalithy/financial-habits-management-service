@@ -9,6 +9,7 @@ package com.lali.financial.habits.management.service.controller;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import com.lali.financial.habits.management.service.service.UserService;
@@ -34,11 +35,11 @@ public class UserController {
      * The API creates a user
      *
      * @param userDTO -> {email, password, confirmPassword}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @PostMapping("/register_user")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody RequestUserDTO userDTO) {
+    public ResponseEntity<ResponseDTO> registerUser(@Valid @RequestBody RequestUserDTO userDTO) {
         log.info("UserController.registerUser API : {}", MessageConstants.ACCESSED);
         return userService.registerUser(userDTO);
     }
@@ -47,11 +48,12 @@ public class UserController {
      * The API provides login authentication
      *
      * @param userDTO -> {email, password}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      */
     @PostMapping("/login_user")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody RequestUserLoginDTO userDTO) {
+    public ResponseEntity<ResponseDTO> loginUser(@Valid @RequestBody RequestUserLoginDTO userDTO) {
         log.info("UserController.loginUser API : {}", MessageConstants.ACCESSED);
         return userService.loginUser(userDTO);
     }
+
 }

@@ -9,7 +9,12 @@ package com.lali.financial.habits.management.service.service.Impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.*;
+import com.lali.financial.habits.management.service.dto.DTOI.UserDTO;
+import com.lali.financial.habits.management.service.dto.DTOI.UserDTOI;
+import com.lali.financial.habits.management.service.dto.RequestUserDTO;
+import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
+import com.lali.financial.habits.management.service.dto.ResponseDTO;
+import com.lali.financial.habits.management.service.dto.ValidatorDTO;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
 import com.lali.financial.habits.management.service.service.UserService;
@@ -21,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -34,18 +40,22 @@ public class UserServiceImpl implements UserService {
      * The method creates a user
      *
      * @param userDTO -> {email, password, confirmPassword}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override
-    public ResponseEntity<String> registerUser(RequestUserDTO userDTO) {
+    public ResponseEntity<ResponseDTO> registerUser(RequestUserDTO userDTO) {
 
         log.info("UserServiceImpl.registerUser Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
             ValidatorDTO validateUser = isValidateUser(userDTO);
             if (validateUser.isStatus()) {
                 log.warn("UserServiceImpl.registerUser Method : {}", validateUser.getMessage());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validateUser.getMessage());
+                responseDTO.setMessage(validateUser.getMessage());
+                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+                responseDTO.setTimestamp(LocalDateTime.now());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
             }
 
             GuestUser user = GuestUser.builder()
@@ -55,11 +65,17 @@ public class UserServiceImpl implements UserService {
                     .isActive(true)
                     .build();
             userRepository.save(user);
-            return ResponseEntity.status(HttpStatus.OK).body(MessageConstants.SUCCESSFULLY_CREATED);
+            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_CREATED);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
         } catch (RuntimeException exception) {
             log.error("UserServiceImpl.registerUser Method : {}", exception.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.FAILED_USER_REGISTRATION);
+            responseDTO.setMessage(MessageConstants.FAILED_USER_REGISTRATION);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
 
@@ -67,19 +83,52 @@ public class UserServiceImpl implements UserService {
      * The method provides login authentication
      *
      * @param userDTO -> {email, password}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
      */
     @Override
-    public ResponseEntity<String> loginUser(RequestUserLoginDTO userDTO) {
+    public ResponseEntity<ResponseDTO> loginUser(RequestUserLoginDTO userDTO) {
 
         log.info("UserServiceImpl.loginUser Method : {}", MessageConstants.ACCESSED);
         UserDTOI userByEmailAndIsActive = userRepository.findGuestUserByEmailAndIsActive(userDTO.getEmail(), true);
+        ResponseDTO responseDTO = new ResponseDTO();
         if (userByEmailAndIsActive.getPassword().equals(userDTO.getPassword())) {
-            return ResponseEntity.ok(MessageConstants.LOGIN_SUCCESSFUL);
+            Integer userId = userByEmailAndIsActive.getUserId();
+            String email = userByEmailAndIsActive.getEmail();
+
+            String displayName = getDisplayName(email);
+
+            UserDTO user = new UserDTO();
+            user.setUserId(userId);
+            user.setEmail(email);
+            user.setDisplayName(displayName);
+
+            responseDTO.setMessage(MessageConstants.LOGIN_SUCCESSFUL);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            responseDTO.setDetails(user);
+            return ResponseEntity.ok().body(responseDTO);
         } else {
-            return ResponseEntity.badRequest().body(MessageConstants.AUTHENTICATION_FAILED);
+            responseDTO.setMessage(MessageConstants.AUTHENTICATION_FAILED);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.badRequest().body(responseDTO);
         }
 
+    }
+
+    /**
+     * The method provide display name of user by email
+     *
+     * @param email
+     * @return String
+     * @author Lali..
+     */
+    private String getDisplayName(String email) {
+        log.info("UserServiceImpl.getDisplayName Method : {}", MessageConstants.ACCESSED);
+        return Arrays.stream(email.split("\\@"))
+                .map(s -> s.trim())
+                .findFirst().get();
     }
 
     /**

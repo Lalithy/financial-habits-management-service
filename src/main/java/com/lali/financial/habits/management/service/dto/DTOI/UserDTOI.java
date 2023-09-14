@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.dto;
+package com.lali.financial.habits.management.service.dto.DTOI;
 
 /* ==================================================
  * Author: Lali..
@@ -9,6 +9,8 @@ package com.lali.financial.habits.management.service.dto;
  **/
 
 public interface UserDTOI {
+
+    Integer getUserId();
     String getEmail();
     String getPassword();
 
