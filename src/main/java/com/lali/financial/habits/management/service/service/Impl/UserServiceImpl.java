@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
                     .isActive(true)
                     .build();
             userRepository.save(user);
-            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_CREATED);
+            responseDTO.setMessage(MessageConstants.USER_REGISTRATION_SUCCESSFUL);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
