@@ -11,7 +11,8 @@ package com.lali.financial.habits.management.service.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -27,6 +28,6 @@ public class BudgetCategory {
     private String budgetCategoryName;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
-    private Set<GuestUser> users;
+    private List<GuestUser> users = new ArrayList<>();
 
 }

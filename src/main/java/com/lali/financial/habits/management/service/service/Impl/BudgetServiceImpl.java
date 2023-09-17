@@ -10,10 +10,12 @@ package com.lali.financial.habits.management.service.service.Impl;
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryDTOI;
+import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryIdOnlyDTOI;
 import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.repository.BudgetCategoryRepository;
+import com.lali.financial.habits.management.service.repository.GuestUserRepository;
 import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,8 @@ import java.util.List;
 public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetCategoryRepository budgetCategoryRepository;
+
+    private final GuestUserRepository userRepository;
 
 
     /**
@@ -69,6 +73,12 @@ public class BudgetServiceImpl implements BudgetService {
         }
     }
 
+    /**
+     * The method provide all budget categories
+     *
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
     @Override
     public ResponseEntity<ResponseDTO> getAllBudgetCategories() {
 
@@ -90,6 +100,35 @@ public class BudgetServiceImpl implements BudgetService {
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
 
+    }
+
+    /**
+     * The method find budget category by ID
+     *
+     * @param budgetCategoryId
+     * @return BudgetCategory
+     * @author Lali..
+     */
+    @Override
+    public BudgetCategory findBudgetCategoryById(Integer budgetCategoryId) {
+        log.info("ExpensesImpl.findBudgetCategoryById Method : {}", MessageConstants.ACCESSED);
+        return budgetCategoryRepository.findById(budgetCategoryId).get();
+    }
+
+    /**
+     * The method find all budget categories
+     *
+     * @returnList<Integer>
+     * @author Lali..
+     */
+    @Override
+    public List<Integer> findAllCategoryID() {
+        log.info("ExpensesImpl.findAllCategoryID Method : {}", MessageConstants.ACCESSED);
+        List<BudgetCategoryIdOnlyDTOI> budgetCategoryIdsList = budgetCategoryRepository.findAllByOrderByBudgetCategoryId();
+        return budgetCategoryIdsList
+                .stream()
+                .map(BudgetCategoryIdOnlyDTOI::getBudgetCategoryId)
+                .toList();
     }
 
 }

@@ -40,19 +40,16 @@ public class BudgetController {
         return budgetService.addBudgetCategory(budgetCategoryDTO);
     }
 
-
+    /**
+     * The API provide all budget categories
+     *
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
     @GetMapping("/all_budget_categories")
     public ResponseEntity<ResponseDTO> getAllBudgetCategories() {
         log.info("ExpensesController.getAllBudgetCategories API : {}", MessageConstants.ACCESSED);
         return budgetService.getAllBudgetCategories();
     }
-
-
-//    @PostMapping("/add_budget_category")
-//    public ResponseEntity<ResponseDTO> assignBudgetCategoryToUser(@Valid @RequestBody RequestBudgetCategoryDTO budgetCategoryDTO) {
-//        log.info("ExpensesController.assignBudgetCategoryToUser API : {}", MessageConstants.ACCESSED);
-//        return budgetService.assignBudgetCategoryToUser(budgetCategoryDTO);
-//    }
-
 
 }

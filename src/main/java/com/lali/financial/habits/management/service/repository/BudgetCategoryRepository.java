@@ -9,6 +9,7 @@ package com.lali.financial.habits.management.service.repository;
  **/
 
 import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryDTOI;
+import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryIdOnlyDTOI;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -28,5 +29,7 @@ public interface BudgetCategoryRepository extends JpaRepository<BudgetCategory, 
     boolean existsByBudgetCategoryNameIgnoreCase(String budgetCategoryName);
 
     List<BudgetCategoryDTOI> findAllByOrderByBudgetCategoryName();
+
+    List<BudgetCategoryIdOnlyDTOI> findAllByOrderByBudgetCategoryId();
 
 }

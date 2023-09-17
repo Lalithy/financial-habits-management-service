@@ -15,8 +15,10 @@ import com.lali.financial.habits.management.service.dto.RequestUserDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
+import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.service.UserService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     private final GuestUserRepository userRepository;
 
+    private final BudgetService budgetService;
 
     /**
      * The method creates a user
@@ -49,7 +53,8 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl.registerUser Method : {}", MessageConstants.ACCESSED);
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            ValidatorDTO validateUser = isValidateUser(userDTO);
+            List<Integer> allCategoryID = budgetService.findAllCategoryID();
+            ValidatorDTO validateUser = isValidateUser(userDTO, allCategoryID);
             if (validateUser.isStatus()) {
                 log.warn("UserServiceImpl.registerUser Method : {}", validateUser.getMessage());
                 responseDTO.setMessage(validateUser.getMessage());
@@ -58,13 +63,23 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
             }
 
-            GuestUser user = GuestUser.builder()
-                    .email(userDTO.getEmail())
-                    .password(userDTO.getPassword())
-                    .userCreateDate(LocalDateTime.now())
-                    .isActive(true)
-                    .build();
-            userRepository.save(user);
+            GuestUser newUser = new GuestUser();
+            newUser.setEmail(userDTO.getEmail());
+            newUser.setPassword(userDTO.getPassword());
+            newUser.setUserCreateDate(LocalDateTime.now());
+            newUser.setIsActive(true);
+
+            newUser.getCategories()
+                    .addAll(allCategoryID
+                            .stream()
+                            .map(budgetCategory -> {
+                                BudgetCategory category = budgetService.findBudgetCategoryById(budgetCategory);
+                                category.getUsers().add(newUser);
+                                return category;
+                            }).toList());
+
+            userRepository.save(newUser);
+
             responseDTO.setMessage(MessageConstants.USER_REGISTRATION_SUCCESSFUL);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
@@ -135,10 +150,11 @@ public class UserServiceImpl implements UserService {
      * The method validate a user
      *
      * @param userDTO
+     * @param allCategoryID
      * @return ValidatorDTO
      * @author Lali..
      */
-    private ValidatorDTO isValidateUser(RequestUserDTO userDTO) {
+    private ValidatorDTO isValidateUser(RequestUserDTO userDTO, List<Integer> allCategoryID) {
 
         log.info("UserServiceImpl.isValidateUser Method : {}", MessageConstants.ACCESSED);
         String password = userDTO.getPassword();
@@ -165,6 +181,10 @@ public class UserServiceImpl implements UserService {
         } else if (isInvalidConfirmPassword) {
             validatorDTO.setStatus(true);
             validatorDTO.setMessage(MessageConstants.INVALID_CONFIRM_PASSWORD);
+            return validatorDTO;
+        } else if (allCategoryID.isEmpty()) {
+            validatorDTO.setStatus(true);
+            validatorDTO.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET_CATEGORIES);
             return validatorDTO;
         }
 
