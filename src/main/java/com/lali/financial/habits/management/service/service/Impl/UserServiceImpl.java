@@ -9,9 +9,16 @@ package com.lali.financial.habits.management.service.service.Impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.*;
+import com.lali.financial.habits.management.service.dto.DTOI.UserDTO;
+import com.lali.financial.habits.management.service.dto.DTOI.UserDTOI;
+import com.lali.financial.habits.management.service.dto.RequestUserDTO;
+import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
+import com.lali.financial.habits.management.service.dto.ResponseDTO;
+import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
+import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.service.UserService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,37 +38,59 @@ public class UserServiceImpl implements UserService {
 
     private final GuestUserRepository userRepository;
 
+    private final BudgetService budgetService;
 
     /**
      * The method creates a user
      *
      * @param userDTO -> {email, password, confirmPassword}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override
-    public ResponseEntity<String> registerUser(RequestUserDTO userDTO) {
+    public ResponseEntity<ResponseDTO> registerUser(RequestUserDTO userDTO) {
 
         log.info("UserServiceImpl.registerUser Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO responseDTO = new ResponseDTO();
         try {
-            ValidatorDTO validateUser = isValidateUser(userDTO);
+            List<Integer> allCategoryID = budgetService.findAllCategoryID();
+            ValidatorDTO validateUser = isValidateUser(userDTO, allCategoryID);
             if (validateUser.isStatus()) {
                 log.warn("UserServiceImpl.registerUser Method : {}", validateUser.getMessage());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validateUser.getMessage());
+                responseDTO.setMessage(validateUser.getMessage());
+                responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+                responseDTO.setTimestamp(LocalDateTime.now());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
             }
 
-            GuestUser user = GuestUser.builder()
-                    .email(userDTO.getEmail())
-                    .password(userDTO.getPassword())
-                    .userCreateDate(LocalDateTime.now())
-                    .isActive(true)
-                    .build();
-            userRepository.save(user);
-            return ResponseEntity.status(HttpStatus.OK).body(MessageConstants.SUCCESSFULLY_CREATED);
+            GuestUser newUser = new GuestUser();
+            newUser.setEmail(userDTO.getEmail());
+            newUser.setPassword(userDTO.getPassword());
+            newUser.setUserCreateDate(LocalDateTime.now());
+            newUser.setIsActive(true);
+
+            newUser.getCategories()
+                    .addAll(allCategoryID
+                            .stream()
+                            .map(budgetCategory -> {
+                                BudgetCategory category = budgetService.findBudgetCategoryById(budgetCategory);
+                                category.getUsers().add(newUser);
+                                return category;
+                            }).toList());
+
+            userRepository.save(newUser);
+
+            responseDTO.setMessage(MessageConstants.USER_REGISTRATION_SUCCESSFUL);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
         } catch (RuntimeException exception) {
             log.error("UserServiceImpl.registerUser Method : {}", exception.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.FAILED_USER_REGISTRATION);
+            responseDTO.setMessage(MessageConstants.FAILED_USER_REGISTRATION);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
 
@@ -67,29 +98,63 @@ public class UserServiceImpl implements UserService {
      * The method provides login authentication
      *
      * @param userDTO -> {email, password}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
      */
     @Override
-    public ResponseEntity<String> loginUser(RequestUserLoginDTO userDTO) {
+    public ResponseEntity<ResponseDTO> loginUser(RequestUserLoginDTO userDTO) {
 
         log.info("UserServiceImpl.loginUser Method : {}", MessageConstants.ACCESSED);
         UserDTOI userByEmailAndIsActive = userRepository.findGuestUserByEmailAndIsActive(userDTO.getEmail(), true);
+        ResponseDTO responseDTO = new ResponseDTO();
         if (userByEmailAndIsActive.getPassword().equals(userDTO.getPassword())) {
-            return ResponseEntity.ok(MessageConstants.LOGIN_SUCCESSFUL);
+            Integer userId = userByEmailAndIsActive.getUserId();
+            String email = userByEmailAndIsActive.getEmail();
+
+            String displayName = getDisplayName(email);
+
+            UserDTO user = new UserDTO();
+            user.setUserId(userId);
+            user.setEmail(email);
+            user.setDisplayName(displayName);
+
+            responseDTO.setMessage(MessageConstants.LOGIN_SUCCESSFUL);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            responseDTO.setDetails(user);
+            return ResponseEntity.ok().body(responseDTO);
         } else {
-            return ResponseEntity.badRequest().body(MessageConstants.AUTHENTICATION_FAILED);
+            responseDTO.setMessage(MessageConstants.AUTHENTICATION_FAILED);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.badRequest().body(responseDTO);
         }
 
+    }
+
+    /**
+     * The method provide display name of user by email
+     *
+     * @param email
+     * @return String
+     * @author Lali..
+     */
+    private String getDisplayName(String email) {
+        log.info("UserServiceImpl.getDisplayName Method : {}", MessageConstants.ACCESSED);
+        return Arrays.stream(email.split("\\@"))
+                .map(s -> s.trim())
+                .findFirst().get();
     }
 
     /**
      * The method validate a user
      *
      * @param userDTO
+     * @param allCategoryID
      * @return ValidatorDTO
      * @author Lali..
      */
-    private ValidatorDTO isValidateUser(RequestUserDTO userDTO) {
+    private ValidatorDTO isValidateUser(RequestUserDTO userDTO, List<Integer> allCategoryID) {
 
         log.info("UserServiceImpl.isValidateUser Method : {}", MessageConstants.ACCESSED);
         String password = userDTO.getPassword();
@@ -116,6 +181,10 @@ public class UserServiceImpl implements UserService {
         } else if (isInvalidConfirmPassword) {
             validatorDTO.setStatus(true);
             validatorDTO.setMessage(MessageConstants.INVALID_CONFIRM_PASSWORD);
+            return validatorDTO;
+        } else if (allCategoryID.isEmpty()) {
+            validatorDTO.setStatus(true);
+            validatorDTO.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET_CATEGORIES);
             return validatorDTO;
         }
 

@@ -12,7 +12,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -32,9 +33,9 @@ public class GuestUser {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "user_expenses_category",
+            name = "user_budget_category",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "expenses_category_id"))
-    private Set<BudgetCategory> categories;
+            inverseJoinColumns = @JoinColumn(name = "budget_category_id"))
+    private List<BudgetCategory> categories = new ArrayList<>();
 
 }

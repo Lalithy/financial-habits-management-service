@@ -4,7 +4,7 @@ package com.lali.financial.habits.management.service.dto;
  * Author: Lali..
  * Created Date: 9/13/2023
  * Project: financial-habits-management-service
- * Description: ResponseDTO
+ * Description: BudgetCategoryDTO
  * ==================================================
  **/
 
@@ -12,23 +12,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDTO implements Serializable {
+public class BudgetCategoryDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -4381779974140973051L;
+    private static final long serialVersionUID = 6000807976949273933L;
 
-    private String message;
-    private Object details;
-    private HttpStatus status;
-    private LocalDateTime timestamp;
+    private Integer budgetCategoryId;
+    private String budgetCategoryName;
 
 }

@@ -8,7 +8,7 @@ package com.lali.financial.habits.management.service.repository;
  * ==================================================
  **/
 
-import com.lali.financial.habits.management.service.dto.UserDTOI;
+import com.lali.financial.habits.management.service.dto.DTOI.UserDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

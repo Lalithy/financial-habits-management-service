@@ -25,5 +25,9 @@ public class MessageConstants {
     public static final String THE_PASSWORD_CONFIRMATION_DOES_NOT_MATCH = "The password confirmation doesn't match";
     public static final String LOGIN_SUCCESSFUL = "Login Successful!";
     public static final String AUTHENTICATION_FAILED = "Authentication Failed!";
+    public static final String BUDGET_CATEGORY_IS_EMPTY = "Budget Category is Empty!";
+    public static final String FOUND_BUDGET_CATEGORIES = "Found Budget Categories!";
+    public static final String CAN_NOT_FIND_BUDGET_CATEGORIES = "Can not find Budget Categories!";
+    public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
 
 }
