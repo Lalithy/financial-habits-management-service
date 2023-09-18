@@ -29,5 +29,7 @@ public class MessageConstants {
     public static final String FOUND_BUDGET_CATEGORIES = "Found Budget Categories!";
     public static final String CAN_NOT_FIND_BUDGET_CATEGORIES = "Can not find Budget Categories!";
     public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
+    public static final String INVALID_INCOME_DETAILS = "Invalid Income Details!";
+    public static final String INVALID_DATE = "Invalid Date!";
 
 }

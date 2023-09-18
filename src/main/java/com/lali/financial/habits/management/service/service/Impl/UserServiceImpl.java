@@ -77,12 +77,14 @@ public class UserServiceImpl implements UserService {
                                 category.getUsers().add(newUser);
                                 return category;
                             }).toList());
+            GuestUser savedUser = userRepository.save(newUser);
 
-            userRepository.save(newUser);
+            UserDTO userResponse = getUserResponse(savedUser.getUserId(), userDTO.getEmail());
 
             responseDTO.setMessage(MessageConstants.USER_REGISTRATION_SUCCESSFUL);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
+            responseDTO.setDetails(userResponse);
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
         } catch (RuntimeException exception) {
@@ -111,17 +113,12 @@ public class UserServiceImpl implements UserService {
             Integer userId = userByEmailAndIsActive.getUserId();
             String email = userByEmailAndIsActive.getEmail();
 
-            String displayName = getDisplayName(email);
-
-            UserDTO user = new UserDTO();
-            user.setUserId(userId);
-            user.setEmail(email);
-            user.setDisplayName(displayName);
+            UserDTO userResponse = getUserResponse(userId, email);
 
             responseDTO.setMessage(MessageConstants.LOGIN_SUCCESSFUL);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
-            responseDTO.setDetails(user);
+            responseDTO.setDetails(userResponse);
             return ResponseEntity.ok().body(responseDTO);
         } else {
             responseDTO.setMessage(MessageConstants.AUTHENTICATION_FAILED);
@@ -130,6 +127,31 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.badRequest().body(responseDTO);
         }
 
+    }
+
+    @Override
+    public GuestUser findUserById(Integer userId) {
+        log.info("UserServiceImpl.findUserById Method : {}", MessageConstants.ACCESSED);
+        return userRepository.findById(userId).get();
+    }
+
+    /**
+     * The method provide user response details by user id & email
+     *
+     * @param userId
+     * @param email
+     * @return
+     * @author Lali..
+     */
+    private UserDTO getUserResponse(Integer userId, String email) {
+
+        log.info("UserServiceImpl.getUserResponse Method : {}", MessageConstants.ACCESSED);
+        String displayName = getDisplayName(email);
+        UserDTO user = new UserDTO();
+        user.setUserId(userId);
+        user.setEmail(email);
+        user.setDisplayName(displayName);
+        return user;
     }
 
     /**
