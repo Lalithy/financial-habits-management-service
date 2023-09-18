@@ -11,6 +11,8 @@ package com.lali.financial.habits.management.service.util;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,5 +47,29 @@ public class CommonUtilities {
         Pattern p = java.util.regex.Pattern.compile(ePattern);
         Matcher m = p.matcher(email);
         return m.matches();
+    }
+
+    /**
+     * The method convert string date to LocalDateTime object by date & formatter
+     *
+     * @param date
+     * @param formatter
+     * @return LocalDateTime
+     * @author Lali..
+     */
+    public static LocalDateTime convertStringToLocalDateTime(String date, DateTimeFormatter formatter) {
+        log.info("CommonUtilities.convertStringToLocalDateTime Method : {}", MessageConstants.ACCESSED);
+        return LocalDateTime.parse(date, formatter);
+    }
+
+    /**
+     * The method provide a date pattern -> yyyy-MM-dd HH:mm:ss
+     *
+     * @return DateTimeFormatter
+     * @author Lali..
+     */
+    public static DateTimeFormatter getDateTimeFormatter() {
+        log.info("CommonUtilities.getDateTimeFormatter Method : {}", MessageConstants.ACCESSED);
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     }
 }

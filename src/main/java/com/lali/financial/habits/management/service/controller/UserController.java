@@ -38,7 +38,7 @@ public class UserController {
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
-    @PostMapping("/register_user")
+    @PostMapping("/register")
     public ResponseEntity<ResponseDTO> registerUser(@Valid @RequestBody RequestUserDTO userDTO) {
         log.info("UserController.registerUser API : {}", MessageConstants.ACCESSED);
         return userService.registerUser(userDTO);
@@ -49,8 +49,9 @@ public class UserController {
      *
      * @param userDTO -> {email, password}
      * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
      */
-    @PostMapping("/login_user")
+    @PostMapping("/login")
     public ResponseEntity<ResponseDTO> loginUser(@Valid @RequestBody RequestUserLoginDTO userDTO) {
         log.info("UserController.loginUser API : {}", MessageConstants.ACCESSED);
         return userService.loginUser(userDTO);

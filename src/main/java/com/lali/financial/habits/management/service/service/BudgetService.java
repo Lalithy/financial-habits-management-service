@@ -22,10 +22,10 @@ public interface BudgetService {
      * The method creates a budget category
      *
      * @param budgetCategoryDTO -> {budgetCategoryName}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
-    ResponseEntity<String> addBudgetCategory(RequestBudgetCategoryDTO budgetCategoryDTO);
+    ResponseEntity<ResponseDTO> addBudgetCategory(RequestBudgetCategoryDTO budgetCategoryDTO);
 
     /**
      * The method provide all budget categories

@@ -129,6 +129,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public GuestUser findUserById(Integer userId) {
+        log.info("UserServiceImpl.findUserById Method : {}", MessageConstants.ACCESSED);
+        return userRepository.findById(userId).get();
+    }
+
     /**
      * The method provide user response details by user id & email
      *

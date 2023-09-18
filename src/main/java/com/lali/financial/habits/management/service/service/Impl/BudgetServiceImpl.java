@@ -41,35 +41,50 @@ public class BudgetServiceImpl implements BudgetService {
      * The method creates an budget category
      *
      * @param budgetCategoryDTO -> {budgetCategoryName}
-     * @return ResponseEntity<String>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override
-    public ResponseEntity<String> addBudgetCategory(RequestBudgetCategoryDTO budgetCategoryDTO) {
+    public ResponseEntity<ResponseDTO> addBudgetCategory(RequestBudgetCategoryDTO budgetCategoryDTO) {
 
         log.info("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
         try {
             boolean isInvalidBudgetCategory = CommonUtilities.isNullEmptyBlank(budgetCategoryDTO.getBudgetCategoryName());
             if (isInvalidBudgetCategory) {
                 log.warn("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.VALIDATION_FAILED);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.VALIDATION_FAILED);
+                response.setMessage(MessageConstants.VALIDATION_FAILED);
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setTimestamp(LocalDateTime.now());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
             boolean existsByBudgetCategoryName = budgetCategoryRepository.existsByBudgetCategoryNameIgnoreCase(budgetCategoryDTO.getBudgetCategoryName());
             if (existsByBudgetCategoryName) {
                 log.warn("ExpensesImpl.addBudgetCategory Method : {}", MessageConstants.ALREADY_EXISTS_RECORD);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.ALREADY_EXISTS_RECORD);
+                response.setMessage(MessageConstants.ALREADY_EXISTS_RECORD);
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setTimestamp(LocalDateTime.now());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
             BudgetCategory budgetCategory = BudgetCategory.builder()
                     .budgetCategoryName(budgetCategoryDTO.getBudgetCategoryName())
                     .build();
             budgetCategoryRepository.save(budgetCategory);
-            return ResponseEntity.status(HttpStatus.OK).body(MessageConstants.SUCCESSFULLY_CREATED);
+
+            response.setMessage(MessageConstants.SUCCESSFULLY_CREATED);
+            response.setStatus(HttpStatus.OK);
+            response.setTimestamp(LocalDateTime.now());
+            response.setDetails(budgetCategory);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (RuntimeException exception) {
             log.error("ExpensesImpl.addBudgetCategory Method : {}", exception.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageConstants.FAILED_INSERTING);
+            response.setMessage(MessageConstants.FAILED_INSERTING);
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 

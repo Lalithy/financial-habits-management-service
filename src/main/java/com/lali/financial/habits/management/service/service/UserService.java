@@ -11,6 +11,7 @@ package com.lali.financial.habits.management.service.service;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
+import com.lali.financial.habits.management.service.entity.GuestUser;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -31,4 +32,7 @@ public interface UserService {
      * @return ResponseEntity<ResponseDTO>
      */
     ResponseEntity<ResponseDTO> loginUser(RequestUserLoginDTO userDTO);
+
+    GuestUser findUserById(Integer userId);
+
 }
