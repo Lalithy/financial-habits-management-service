@@ -212,7 +212,7 @@ public class UserServiceImpl implements UserService {
 
         boolean isConfirmPassword = !password.equals(confirmPassword);
         validatorDTO.setStatus(isConfirmPassword);
-        validatorDTO.setMessage(MessageConstants.THE_PASSWORD_CONFIRMATION_DOES_NOT_MATCH);
+        validatorDTO.setMessage(MessageConstants.PASSWORD_DOES_NOT_MATCH);
         return validatorDTO;
     }
 }
