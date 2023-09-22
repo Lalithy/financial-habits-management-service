@@ -15,7 +15,6 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -25,7 +24,7 @@ public class RequestBudgetDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 2633698247493389610L;
     private Double budgetAmount;
-    private LocalDateTime budgetDate;
+    private String budgetDate;
     private Integer budgetCategoryId;
     private Integer userId;
 }

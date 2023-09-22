@@ -100,6 +100,13 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
     }
 
+    /**
+     * The method if not exist save a location
+     *
+     * @param locationName
+     * @return Location
+     * @author Lali..
+     */
     private Location saveLocation(String locationName) {
 
         log.info("ExpenseServiceImpl.saveLocation Method : {}", MessageConstants.ACCESSED);
