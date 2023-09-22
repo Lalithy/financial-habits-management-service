@@ -1,21 +1,21 @@
-package com.lali.financial.habits.management.service.service.Impl;
+package com.lali.financial.habits.management.service.service.impl;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/17/2023
+ * Created Date: 9/22/2023
  * Project: financial-habits-management-service
- * Description: IncomeServiceImpl
+ * Description: SavingsServiceImpl
  * ==================================================
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
+import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
 import com.lali.financial.habits.management.service.entity.GuestUser;
-import com.lali.financial.habits.management.service.entity.Income;
-import com.lali.financial.habits.management.service.repository.IncomeRepository;
-import com.lali.financial.habits.management.service.service.IncomeService;
+import com.lali.financial.habits.management.service.entity.Savings;
+import com.lali.financial.habits.management.service.repository.SavingsRepository;
+import com.lali.financial.habits.management.service.service.SavingsService;
 import com.lali.financial.habits.management.service.service.UserService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import com.lali.financial.habits.management.service.util.DateValidator;
@@ -32,56 +32,56 @@ import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class IncomeServiceImpl implements IncomeService {
+public class SavingsServiceImpl implements SavingsService {
 
-    private final IncomeRepository incomeRepository;
+    private final SavingsRepository savingsRepository;
 
     private final UserService userService;
 
     /**
-     * The method add an income
+     * The method add a savings
      *
-     * @param incomeDTO -> {incomeDetails, incomeAmount, incomeDate, userId}
+     * @param savingsDTO -> {savingsDetails, savingsAmount, savingsDate, userId}
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override
-    public ResponseEntity<ResponseDTO> addIncome(RequestIncomeDTO incomeDTO) {
+    public ResponseEntity<ResponseDTO> addSavings(RequestSavingsDTO savingsDTO) {
 
-        log.info("IncomeServiceImpl.addIncome Method : {}", MessageConstants.ACCESSED);
+        log.info("SavingsServiceImpl.addSavings Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
         try {
 
             DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
-            ValidatorDTO validateIncome = isValidateIncome(incomeDTO, formatter);
-            if (validateIncome.isStatus()) {
-                log.warn("IncomeServiceImpl.addIncome Method : {}", MessageConstants.VALIDATION_FAILED);
-                response.setMessage(validateIncome.getMessage());
+            ValidatorDTO validateSavings = isValidateSavings(savingsDTO, formatter);
+            if (validateSavings.isStatus()) {
+                log.warn("SavingsServiceImpl.addSavings Method : {}", MessageConstants.VALIDATION_FAILED);
+                response.setMessage(validateSavings.getMessage());
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setTimestamp(LocalDateTime.now());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
-            LocalDateTime incomeDateTime = getIncomeDateTime(incomeDTO.getIncomeDate(), formatter);
+            LocalDateTime savingsDateTime = getSavingsDateTime(savingsDTO.getSavingsDate(), formatter);
 
-            GuestUser user = userService.findUserById(incomeDTO.getUserId());
+            GuestUser user = userService.findUserById(savingsDTO.getUserId());
 
-            Income income = Income.builder()
-                    .incomeDetails(incomeDTO.getIncomeDetails())
-                    .incomeAmount(incomeDTO.getIncomeAmount())
-                    .incomeDate(incomeDateTime)
+            Savings savings = Savings.builder()
+                    .savingsDetails(savingsDTO.getSavingsDetails())
+                    .savingsAmount(savingsDTO.getSavingsAmount())
+                    .savingsDate(savingsDateTime)
                     .user(user)
                     .build();
-            incomeRepository.save(income);
+            savingsRepository.save(savings);
 
             response.setMessage(MessageConstants.SUCCESSFULLY_CREATED);
             response.setStatus(HttpStatus.OK);
             response.setTimestamp(LocalDateTime.now());
-            response.setDetails(income);
+            response.setDetails(savings);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (RuntimeException exception) {
-            log.error("IncomeServiceImpl.addIncome Method : {}", exception.getMessage());
+            log.error("SavingsServiceImpl.addSavings Method : {}", exception.getMessage());
             response.setMessage(MessageConstants.FAILED_INSERTING);
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setTimestamp(LocalDateTime.now());
@@ -90,47 +90,46 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     /**
-     * The method validate income details
+     * The method validate savings details
      *
-     * @param incomeDTO
+     * @param savingsDTO
      * @param formatter
      * @return ValidatorDTO
      * @author Lali..
      */
-    private ValidatorDTO isValidateIncome(RequestIncomeDTO incomeDTO, DateTimeFormatter formatter) {
-        log.info("IncomeServiceImpl.isValidateIncome Method : {}", MessageConstants.ACCESSED);
-        boolean isInvalidBudgetCategory = CommonUtilities.isNullEmptyBlank(incomeDTO.getIncomeDetails());
+    private ValidatorDTO isValidateSavings(RequestSavingsDTO savingsDTO, DateTimeFormatter formatter) {
+        log.info("SavingsServiceImpl.isValidateSavings Method : {}", MessageConstants.ACCESSED);
+        boolean isInvalidBudgetCategory = CommonUtilities.isNullEmptyBlank(savingsDTO.getSavingsDetails());
         DateValidator validator = new DateValidatorDateTimeFormatter(formatter);
-        boolean isValidIncomeDate = !validator.isValid(incomeDTO.getIncomeDate());
+        boolean isValidSavingsDate = !validator.isValid(savingsDTO.getSavingsDate());
         ValidatorDTO validatorDTO = new ValidatorDTO();
 
         if (isInvalidBudgetCategory) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DETAILS);
+            validatorDTO.setMessage(MessageConstants.INVALID_SAVINGS_DETAILS);
             return validatorDTO;
         }
-        if (incomeDTO.getIncomeAmount() <= 0) {
+        if (savingsDTO.getSavingsAmount() <= 0) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_AMOUNT);
+            validatorDTO.setMessage(MessageConstants.INVALID_SAVINGS_AMOUNT);
             return validatorDTO;
         }
 
-        validatorDTO.setStatus(isValidIncomeDate);
+        validatorDTO.setStatus(isValidSavingsDate);
         validatorDTO.setMessage(MessageConstants.INVALID_DATE);
         return validatorDTO;
     }
 
     /**
-     * The method provide a  LocalDateTime object of income date
+     * The method provide a  LocalDateTime object of savings date
      *
-     * @param incomeDate
+     * @param savingsDate
      * @param formatter
      * @return LocalDateTime
      * @author Lali..
      */
-    private LocalDateTime getIncomeDateTime(String incomeDate, DateTimeFormatter formatter) {
-        log.info("IncomeServiceImpl.getIncomeDateTime Method : {}", MessageConstants.ACCESSED);
-        return CommonUtilities.convertStringToLocalDateTime(incomeDate, formatter);
+    private LocalDateTime getSavingsDateTime(String savingsDate, DateTimeFormatter formatter) {
+        log.info("SavingsServiceImpl.getSavingsDateTime Method : {}", MessageConstants.ACCESSED);
+        return CommonUtilities.convertStringToLocalDateTime(savingsDate, formatter);
     }
-
 }

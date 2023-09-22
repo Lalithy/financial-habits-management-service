@@ -8,6 +8,7 @@ package com.lali.financial.habits.management.service.entity;
  * ==================================================
  **/
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -35,6 +36,7 @@ public class Budget {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private GuestUser user;
 
 }

@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.service.Impl;
+package com.lali.financial.habits.management.service.service.impl;
 
 /* ==================================================
  * Author: Lali..

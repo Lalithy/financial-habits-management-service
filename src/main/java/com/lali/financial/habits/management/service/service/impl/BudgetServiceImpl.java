@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.service.Impl;
+package com.lali.financial.habits.management.service.service.impl;
 
 /* ==================================================
  * Author: Lali..
@@ -127,7 +127,8 @@ public class BudgetServiceImpl implements BudgetService {
     @Override
     public BudgetCategory findBudgetCategoryById(Integer budgetCategoryId) {
         log.info("ExpensesImpl.findBudgetCategoryById Method : {}", MessageConstants.ACCESSED);
-        return budgetCategoryRepository.findById(budgetCategoryId).get();
+        return budgetCategoryRepository.findById(budgetCategoryId)
+                .orElseThrow(() -> new RuntimeException("Budget category nor found!"));
     }
 
     /**
