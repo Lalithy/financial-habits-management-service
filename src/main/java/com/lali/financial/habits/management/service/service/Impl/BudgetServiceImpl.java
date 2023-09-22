@@ -9,8 +9,8 @@ package com.lali.financial.habits.management.service.service.Impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryDTOI;
-import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryIdOnlyDTOI;
+import com.lali.financial.habits.management.service.dto.dtoi.BudgetCategoryDTOI;
+import com.lali.financial.habits.management.service.dto.dtoi.BudgetCategoryIdOnlyDTOI;
 import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;

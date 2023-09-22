@@ -32,5 +32,6 @@ public class MessageConstants {
     public static final String INVALID_INCOME_DETAILS = "Invalid Income Details!";
     public static final String INVALID_DATE = "Invalid Date!";
     public static final String INVALID_INCOME_AMOUNT = "Invalid Income Amount!";
-
+    public static final String INVALID_SAVINGS_DETAILS = "Invalid Savings Details!";
+    public static final String INVALID_SAVINGS_AMOUNT = "Invalid Savings Amount!";
 }

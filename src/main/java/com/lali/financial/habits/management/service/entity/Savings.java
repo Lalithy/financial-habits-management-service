@@ -8,6 +8,8 @@ package com.lali.financial.habits.management.service.entity;
  * ==================================================
  **/
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,17 +21,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Savings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer savingsId;
+    private Long savingsId;
     private String savingsDetails;
-    private String savingsAmount;
+    private Double savingsAmount;
     private LocalDateTime savingsDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private GuestUser user;
 
 }

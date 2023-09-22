@@ -10,8 +10,8 @@ package com.lali.financial.habits.management.service.service.Impl;
 
 
 import static com.lali.financial.habits.management.service.constants.MessageConstants.*;
-import com.lali.financial.habits.management.service.dto.DTOI.UserDTO;
-import com.lali.financial.habits.management.service.dto.DTOI.UserDTOI;
+import com.lali.financial.habits.management.service.dto.UserDTO;
+import com.lali.financial.habits.management.service.dto.dtoi.UserDTOI;
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
