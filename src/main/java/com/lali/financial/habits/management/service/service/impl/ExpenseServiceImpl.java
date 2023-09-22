@@ -124,19 +124,13 @@ public class ExpenseServiceImpl implements ExpenseService {
      */
     private ValidatorDTO isValidateExpense(RequestExpenseDTO expenseDTO, DateTimeFormatter formatter) {
         log.info("ExpenseServiceImpl.isValidateExpense Method : {}", MessageConstants.ACCESSED);
-        boolean isInvalidBudgetCategory = CommonUtilities.isNullEmptyBlank(expenseDTO.getExpenseDetails());
         DateValidator validator = new DateValidatorDateTimeFormatter(formatter);
         boolean isValidExpenseDate = !validator.isValid(expenseDTO.getExpenseDate());
         ValidatorDTO validatorDTO = new ValidatorDTO();
 
-        if (isInvalidBudgetCategory) {
-            validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DETAILS);
-            return validatorDTO;
-        }
         if (expenseDTO.getExpenseAmount() <= 0) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_AMOUNT);
+            validatorDTO.setMessage(MessageConstants.INVALID_EXPENSE_AMOUNT);
             return validatorDTO;
         }
 

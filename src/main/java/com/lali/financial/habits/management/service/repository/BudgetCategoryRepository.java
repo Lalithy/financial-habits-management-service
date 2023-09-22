@@ -28,7 +28,7 @@ public interface BudgetCategoryRepository extends JpaRepository<BudgetCategory, 
      */
     boolean existsByBudgetCategoryNameIgnoreCase(String budgetCategoryName);
 
-    List<BudgetCategoryDTOI> findAllByOrderByBudgetCategoryName();
+    List<BudgetCategoryDTOI> findAllByOrderByBudgetCategoryIdAsc();
 
     List<BudgetCategoryIdOnlyDTOI> findAllByOrderByBudgetCategoryId();
 

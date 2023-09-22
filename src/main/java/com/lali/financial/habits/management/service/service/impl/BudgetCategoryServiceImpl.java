@@ -34,6 +34,9 @@ public class BudgetCategoryServiceImpl implements BudgetCategoryService {
 
     private final BudgetCategoryRepository budgetCategoryRepository;
 
+    private final GuestUserRepository userRepository;
+
+
     /**
      * The method creates an budget category
      *
@@ -96,7 +99,7 @@ public class BudgetCategoryServiceImpl implements BudgetCategoryService {
 
         log.info("ExpensesImpl.getAllBudgetCategories Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findAllByOrderByBudgetCategoryName();
+        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findAllByOrderByBudgetCategoryIdAsc();
 
         if (allBudgetCategories.isEmpty()) {
             log.warn("ExpensesImpl.getAllBudgetCategories Method : {}", MessageConstants.BUDGET_CATEGORY_IS_EMPTY);
