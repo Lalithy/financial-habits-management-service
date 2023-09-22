@@ -51,4 +51,12 @@ public interface BudgetCategoryService {
      */
     List<Integer> findAllCategoryID();
 
+    /**
+     * The method provide all budget categories by user id
+     *
+     * @param userId
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getBudgetCategoriesByUserId(Integer userId);
 }

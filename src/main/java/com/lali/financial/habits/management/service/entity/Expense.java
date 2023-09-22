@@ -32,7 +32,6 @@ public class Expense {
     private String expenseDetails;
     private Double expenseAmount;
     private LocalDateTime expenseDate;
-    private String expenseDescription;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "location_id", nullable = false)

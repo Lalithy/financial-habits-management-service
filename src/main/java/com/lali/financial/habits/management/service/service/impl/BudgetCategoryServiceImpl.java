@@ -34,6 +34,9 @@ public class BudgetCategoryServiceImpl implements BudgetCategoryService {
 
     private final BudgetCategoryRepository budgetCategoryRepository;
 
+    private final GuestUserRepository userRepository;
+
+
     /**
      * The method creates an budget category
      *
@@ -96,7 +99,7 @@ public class BudgetCategoryServiceImpl implements BudgetCategoryService {
 
         log.info("ExpensesImpl.getAllBudgetCategories Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findAllByOrderByBudgetCategoryName();
+        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findAllByOrderByBudgetCategoryIdAsc();
 
         if (allBudgetCategories.isEmpty()) {
             log.warn("ExpensesImpl.getAllBudgetCategories Method : {}", MessageConstants.BUDGET_CATEGORY_IS_EMPTY);
@@ -142,6 +145,35 @@ public class BudgetCategoryServiceImpl implements BudgetCategoryService {
                 .stream()
                 .map(BudgetCategoryIdOnlyDTOI::getBudgetCategoryId)
                 .toList();
+    }
+
+    /**
+     * The method provide all budget categories by user id
+     *
+     * @param userId
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getBudgetCategoriesByUserId(Integer userId) {
+
+        log.info("ExpensesImpl.getBudgetCategoriesByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
+
+        if (allBudgetCategories.isEmpty()) {
+            log.warn("ExpensesImpl.getBudgetCategoriesByUserId Method : {}", MessageConstants.BUDGET_CATEGORY_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET_CATEGORIES);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_BUDGET_CATEGORIES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(allBudgetCategories);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
 
 }

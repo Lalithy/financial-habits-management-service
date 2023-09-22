@@ -52,4 +52,17 @@ public class BudgetCategoryController {
         return budgetCategoryService.getAllBudgetCategories();
     }
 
+    /**
+     * The API provide all budget categories by user id
+     *
+     * @param userId
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @GetMapping("/by-user")
+    public ResponseEntity<ResponseDTO> getBudgetCategoriesByUserId(@Valid @RequestParam Integer userId) {
+        log.info("ExpensesController.getBudgetCategoriesByUserId API : {}", MessageConstants.ACCESSED);
+        return budgetCategoryService.getBudgetCategoriesByUserId(userId);
+    }
+
 }
