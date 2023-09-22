@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.service.Impl;
+package com.lali.financial.habits.management.service.service.impl;
 
 /* ==================================================
  * Author: Lali..
@@ -41,7 +41,7 @@ public class IncomeServiceImpl implements IncomeService {
     /**
      * The method add an income
      *
-     * @param incomeDTO
+     * @param incomeDTO -> {incomeDetails, incomeAmount, incomeDate, userId}
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
@@ -107,6 +107,11 @@ public class IncomeServiceImpl implements IncomeService {
         if (isInvalidBudgetCategory) {
             validatorDTO.setStatus(true);
             validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DETAILS);
+            return validatorDTO;
+        }
+        if (incomeDTO.getIncomeAmount() <= 0) {
+            validatorDTO.setStatus(true);
+            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_AMOUNT);
             return validatorDTO;
         }
 

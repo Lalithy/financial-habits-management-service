@@ -22,7 +22,7 @@ public class MessageConstants {
     public static final String INVALID_EMAIL = "Invalid Email!";
     public static final String INVALID_PASSWORD = "Invalid Password!";
     public static final String INVALID_CONFIRM_PASSWORD = "Invalid ConfirmPassword!";
-    public static final String THE_PASSWORD_CONFIRMATION_DOES_NOT_MATCH = "The password confirmation doesn't match";
+    public static final String PASSWORD_DOES_NOT_MATCH = "Password doesn't match";
     public static final String LOGIN_SUCCESSFUL = "Login Successful!";
     public static final String AUTHENTICATION_FAILED = "Authentication Failed!";
     public static final String BUDGET_CATEGORY_IS_EMPTY = "Budget Category is Empty!";
@@ -31,5 +31,7 @@ public class MessageConstants {
     public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
     public static final String INVALID_INCOME_DETAILS = "Invalid Income Details!";
     public static final String INVALID_DATE = "Invalid Date!";
-
+    public static final String INVALID_INCOME_AMOUNT = "Invalid Income Amount!";
+    public static final String INVALID_SAVINGS_DETAILS = "Invalid Savings Details!";
+    public static final String INVALID_SAVINGS_AMOUNT = "Invalid Savings Amount!";
 }

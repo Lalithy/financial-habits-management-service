@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.service.Impl;
+package com.lali.financial.habits.management.service.service.impl;
 
 /* ==================================================
  * Author: Lali..
@@ -9,8 +9,8 @@ package com.lali.financial.habits.management.service.service.Impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryDTOI;
-import com.lali.financial.habits.management.service.dto.DTOI.BudgetCategoryIdOnlyDTOI;
+import com.lali.financial.habits.management.service.dto.dtoi.BudgetCategoryDTOI;
+import com.lali.financial.habits.management.service.dto.dtoi.BudgetCategoryIdOnlyDTOI;
 import com.lali.financial.habits.management.service.dto.RequestBudgetCategoryDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
@@ -127,7 +127,8 @@ public class BudgetServiceImpl implements BudgetService {
     @Override
     public BudgetCategory findBudgetCategoryById(Integer budgetCategoryId) {
         log.info("ExpensesImpl.findBudgetCategoryById Method : {}", MessageConstants.ACCESSED);
-        return budgetCategoryRepository.findById(budgetCategoryId).get();
+        return budgetCategoryRepository.findById(budgetCategoryId)
+                .orElseThrow(() -> new RuntimeException("Budget category nor found!"));
     }
 
     /**

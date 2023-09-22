@@ -8,6 +8,7 @@ package com.lali.financial.habits.management.service.entity;
  * ==================================================
  **/
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class BudgetCategory {
     private String budgetCategoryName;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<GuestUser> users = new ArrayList<>();
 
 }

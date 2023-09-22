@@ -2,16 +2,16 @@ package com.lali.financial.habits.management.service.controller;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/17/2023
+ * Created Date: 9/22/2023
  * Project: financial-habits-management-service
- * Description: IncomeController
+ * Description: SavingsController
  * ==================================================
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
+import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.service.IncomeService;
+import com.lali.financial.habits.management.service.service.SavingsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/fhms/income")
+@RequestMapping("/api/fhms/savings")
 @RequiredArgsConstructor
 @Slf4j
-public class IncomeController {
+public class SavingsController {
 
-    private final IncomeService incomeService;
+    private final SavingsService savingsService;
 
     /**
-     * The API add an income
+     * The API add a savings
      *
-     * @param incomeDTO -> {incomeDetails, incomeAmount, incomeDate, userId}
+     * @param savingsDTO -> {savingsDetails, savingsAmount, savingsDate, userId}
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> addIncome(@Valid @RequestBody RequestIncomeDTO incomeDTO) {
-        log.info("ExpensesController.addIncome API : {}", MessageConstants.ACCESSED);
-        return incomeService.addIncome(incomeDTO);
+    public ResponseEntity<ResponseDTO> addSavings(@Valid @RequestBody RequestSavingsDTO savingsDTO) {
+        log.info("SavingsController.addSavings API : {}", MessageConstants.ACCESSED);
+        return savingsService.addSavings(savingsDTO);
     }
 
 }

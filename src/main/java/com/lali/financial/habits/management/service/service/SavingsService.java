@@ -2,24 +2,25 @@ package com.lali.financial.habits.management.service.service;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/17/2023
+ * Created Date: 9/22/2023
  * Project: financial-habits-management-service
- * Description: IncomeService
+ * Description: SavingsService
  * ==================================================
  **/
 
-import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
+import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 
-public interface IncomeService {
+public interface SavingsService {
 
     /**
-     * The method add an income
+     * The method add a savings
      *
-     * @param incomeDTO -> {incomeDetails, incomeAmount, incomeDate, userId}
+     * @param savingsDTO -> {savingsDetails, savingsAmount, savingsDate, userId}
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
-    ResponseEntity<ResponseDTO> addIncome(RequestIncomeDTO incomeDTO);
+    ResponseEntity<ResponseDTO> addSavings(RequestSavingsDTO savingsDTO);
+
 }

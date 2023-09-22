@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.dto.DTOI;
+package com.lali.financial.habits.management.service.dto;
 
 /* ==================================================
  * Author: Lali..

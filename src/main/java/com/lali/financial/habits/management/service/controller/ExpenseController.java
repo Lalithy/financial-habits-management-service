@@ -2,16 +2,18 @@ package com.lali.financial.habits.management.service.controller;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/17/2023
+ * Created Date: 9/22/2023
  * Project: financial-habits-management-service
- * Description: IncomeController
+ * Description: ExpenseController
  * ==================================================
  **/
 
+
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.RequestExpenseDTO;
 import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.service.IncomeService;
+import com.lali.financial.habits.management.service.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +25,24 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/fhms/income")
+@RequestMapping("/api/fhms/expense")
 @RequiredArgsConstructor
 @Slf4j
-public class IncomeController {
+public class ExpenseController {
 
-    private final IncomeService incomeService;
+    private final ExpenseService expenseService;
 
     /**
-     * The API add an income
+     * The API add an expense
      *
-     * @param incomeDTO -> {incomeDetails, incomeAmount, incomeDate, userId}
+     * @param expenseDTO -> {expenseDetails, expenseAmount, expenseDate, location, budgetCategoryId, userId}
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> addIncome(@Valid @RequestBody RequestIncomeDTO incomeDTO) {
-        log.info("ExpensesController.addIncome API : {}", MessageConstants.ACCESSED);
-        return incomeService.addIncome(incomeDTO);
+    public ResponseEntity<ResponseDTO> addExpense(@Valid @RequestBody RequestExpenseDTO expenseDTO) {
+        log.info("ExpensesController.addExpense API : {}", MessageConstants.ACCESSED);
+        return expenseService.addExpense(expenseDTO);
     }
 
 }

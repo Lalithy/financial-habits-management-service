@@ -1,4 +1,4 @@
-package com.lali.financial.habits.management.service.service.Impl;
+package com.lali.financial.habits.management.service.service.impl;
 
 /* ==================================================
  * Author: Lali..
@@ -8,9 +8,10 @@ package com.lali.financial.habits.management.service.service.Impl;
  * ==================================================
  **/
 
-import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.DTOI.UserDTO;
-import com.lali.financial.habits.management.service.dto.DTOI.UserDTOI;
+
+import static com.lali.financial.habits.management.service.constants.MessageConstants.*;
+import com.lali.financial.habits.management.service.dto.UserDTO;
+import com.lali.financial.habits.management.service.dto.dtoi.UserDTOI;
 import com.lali.financial.habits.management.service.dto.RequestUserDTO;
 import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<ResponseDTO> registerUser(RequestUserDTO userDTO) {
 
-        log.info("UserServiceImpl.registerUser Method : {}", MessageConstants.ACCESSED);
+        log.info("UserServiceImpl.registerUser Method : {}", ACCESSED);
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             List<Integer> allCategoryID = budgetService.findAllCategoryID();
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
             UserDTO userResponse = getUserResponse(savedUser.getUserId(), userDTO.getEmail());
 
-            responseDTO.setMessage(MessageConstants.USER_REGISTRATION_SUCCESSFUL);
+            responseDTO.setMessage(USER_REGISTRATION_SUCCESSFUL);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
             responseDTO.setDetails(userResponse);
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (RuntimeException exception) {
             log.error("UserServiceImpl.registerUser Method : {}", exception.getMessage());
-            responseDTO.setMessage(MessageConstants.FAILED_USER_REGISTRATION);
+            responseDTO.setMessage(FAILED_USER_REGISTRATION);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
@@ -106,7 +107,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<ResponseDTO> loginUser(RequestUserLoginDTO userDTO) {
 
-        log.info("UserServiceImpl.loginUser Method : {}", MessageConstants.ACCESSED);
+        log.info("UserServiceImpl.loginUser Method : {}", ACCESSED);
         UserDTOI userByEmailAndIsActive = userRepository.findGuestUserByEmailAndIsActive(userDTO.getEmail(), true);
         ResponseDTO responseDTO = new ResponseDTO();
         if (userByEmailAndIsActive.getPassword().equals(userDTO.getPassword())) {
@@ -115,13 +116,13 @@ public class UserServiceImpl implements UserService {
 
             UserDTO userResponse = getUserResponse(userId, email);
 
-            responseDTO.setMessage(MessageConstants.LOGIN_SUCCESSFUL);
+            responseDTO.setMessage(LOGIN_SUCCESSFUL);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
             responseDTO.setDetails(userResponse);
             return ResponseEntity.ok().body(responseDTO);
         } else {
-            responseDTO.setMessage(MessageConstants.AUTHENTICATION_FAILED);
+            responseDTO.setMessage(AUTHENTICATION_FAILED);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -131,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GuestUser findUserById(Integer userId) {
-        log.info("UserServiceImpl.findUserById Method : {}", MessageConstants.ACCESSED);
+        log.info("UserServiceImpl.findUserById Method : {}", ACCESSED);
         return userRepository.findById(userId).get();
     }
 
@@ -145,7 +146,7 @@ public class UserServiceImpl implements UserService {
      */
     private UserDTO getUserResponse(Integer userId, String email) {
 
-        log.info("UserServiceImpl.getUserResponse Method : {}", MessageConstants.ACCESSED);
+        log.info("UserServiceImpl.getUserResponse Method : {}", ACCESSED);
         String displayName = getDisplayName(email);
         UserDTO user = new UserDTO();
         user.setUserId(userId);
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
      * @author Lali..
      */
     private String getDisplayName(String email) {
-        log.info("UserServiceImpl.getDisplayName Method : {}", MessageConstants.ACCESSED);
+        log.info("UserServiceImpl.getDisplayName Method : {}", ACCESSED);
         return Arrays.stream(email.split("\\@"))
                 .map(s -> s.trim())
                 .findFirst().get();
@@ -178,7 +179,7 @@ public class UserServiceImpl implements UserService {
      */
     private ValidatorDTO isValidateUser(RequestUserDTO userDTO, List<Integer> allCategoryID) {
 
-        log.info("UserServiceImpl.isValidateUser Method : {}", MessageConstants.ACCESSED);
+        log.info("UserServiceImpl.isValidateUser Method : {}", ACCESSED);
         String password = userDTO.getPassword();
         String confirmPassword = userDTO.getConfirmPassword();
         boolean isInvalidUserEmail = CommonUtilities.isNullEmptyBlank(userDTO.getEmail());
@@ -190,29 +191,29 @@ public class UserServiceImpl implements UserService {
         ValidatorDTO validatorDTO = new ValidatorDTO();
         if (existsByUserEmail) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.ALREADY_EXISTS_USER);
+            validatorDTO.setMessage(ALREADY_EXISTS_USER);
             return validatorDTO;
         } else if (isInvalidUserEmail || validEmail) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_EMAIL);
+            validatorDTO.setMessage(INVALID_EMAIL);
             return validatorDTO;
         } else if (isInvalidPassword) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_PASSWORD);
+            validatorDTO.setMessage(INVALID_PASSWORD);
             return validatorDTO;
         } else if (isInvalidConfirmPassword) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_CONFIRM_PASSWORD);
+            validatorDTO.setMessage(INVALID_CONFIRM_PASSWORD);
             return validatorDTO;
         } else if (allCategoryID.isEmpty()) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET_CATEGORIES);
+            validatorDTO.setMessage(CAN_NOT_FIND_BUDGET_CATEGORIES);
             return validatorDTO;
         }
 
         boolean isConfirmPassword = !password.equals(confirmPassword);
         validatorDTO.setStatus(isConfirmPassword);
-        validatorDTO.setMessage(MessageConstants.THE_PASSWORD_CONFIRMATION_DOES_NOT_MATCH);
+        validatorDTO.setMessage(PASSWORD_DOES_NOT_MATCH);
         return validatorDTO;
     }
 }
