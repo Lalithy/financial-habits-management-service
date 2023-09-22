@@ -4,7 +4,7 @@ package com.lali.financial.habits.management.service.service.impl;
  * Author: Lali..
  * Created Date: 9/9/2023
  * Project: financial-habits-management-service
- * Description: BudgetServiceImpl
+ * Description: BudgetCategoryServiceImpl
  * ==================================================
  **/
 
@@ -16,7 +16,7 @@ import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.repository.BudgetCategoryRepository;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
-import com.lali.financial.habits.management.service.service.BudgetService;
+import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +30,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BudgetServiceImpl implements BudgetService {
+public class BudgetCategoryServiceImpl implements BudgetCategoryService {
 
     private final BudgetCategoryRepository budgetCategoryRepository;
-
-    private final GuestUserRepository userRepository;
-
 
     /**
      * The method creates an budget category
