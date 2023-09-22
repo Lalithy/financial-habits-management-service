@@ -11,7 +11,6 @@ package com.lali.financial.habits.management.service.controller;
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.RequestExpenseDTO;
-import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.service.ExpenseService;
 import lombok.RequiredArgsConstructor;

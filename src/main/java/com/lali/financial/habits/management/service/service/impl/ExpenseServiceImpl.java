@@ -18,7 +18,7 @@ import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Location;
 import com.lali.financial.habits.management.service.repository.ExpenseRepository;
 import com.lali.financial.habits.management.service.repository.LocationRepository;
-import com.lali.financial.habits.management.service.service.BudgetService;
+import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.service.ExpenseService;
 import com.lali.financial.habits.management.service.service.UserService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
@@ -39,7 +39,7 @@ import java.time.format.DateTimeFormatter;
 public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
-    private final BudgetService budgetService;
+    private final BudgetCategoryService budgetCategoryService;
     private final UserService userService;
     private final LocationRepository locationRepository;
 
@@ -73,7 +73,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
             Location location = saveLocation(expenseDTO.getLocation());
 
-            BudgetCategory budgetCategory = budgetService.findBudgetCategoryById(expenseDTO.getBudgetCategoryId());
+            BudgetCategory budgetCategory = budgetCategoryService.findBudgetCategoryById(expenseDTO.getBudgetCategoryId());
 
             Expense expense = Expense.builder()
                     .expenseDetails(expenseDTO.getExpenseDetails())

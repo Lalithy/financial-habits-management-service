@@ -19,7 +19,7 @@ import com.lali.financial.habits.management.service.dto.ValidatorDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
-import com.lali.financial.habits.management.service.service.BudgetService;
+import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.service.UserService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     private final GuestUserRepository userRepository;
 
-    private final BudgetService budgetService;
+    private final BudgetCategoryService budgetCategoryService;
 
     /**
      * The method creates a user
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl.registerUser Method : {}", ACCESSED);
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            List<Integer> allCategoryID = budgetService.findAllCategoryID();
+            List<Integer> allCategoryID = budgetCategoryService.findAllCategoryID();
             ValidatorDTO validateUser = isValidateUser(userDTO, allCategoryID);
             if (validateUser.isStatus()) {
                 log.warn("UserServiceImpl.registerUser Method : {}", validateUser.getMessage());
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
                     .addAll(allCategoryID
                             .stream()
                             .map(budgetCategory -> {
-                                BudgetCategory category = budgetService.findBudgetCategoryById(budgetCategory);
+                                BudgetCategory category = budgetCategoryService.findBudgetCategoryById(budgetCategory);
                                 category.getUsers().add(newUser);
                                 return category;
                             }).toList());

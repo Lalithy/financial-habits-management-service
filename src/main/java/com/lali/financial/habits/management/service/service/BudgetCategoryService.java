@@ -4,7 +4,7 @@ package com.lali.financial.habits.management.service.service;
  * Author: Lali..
  * Created Date: 9/9/2023
  * Project: financial-habits-management-service
- * Description: BudgetService
+ * Description: BudgetCategoryService
  * ==================================================
  **/
 
@@ -14,9 +14,8 @@ import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface BudgetService {
+public interface BudgetCategoryService {
 
     /**
      * The method creates a budget category
