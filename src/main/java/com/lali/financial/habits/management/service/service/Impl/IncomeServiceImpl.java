@@ -109,6 +109,11 @@ public class IncomeServiceImpl implements IncomeService {
             validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DETAILS);
             return validatorDTO;
         }
+        if (incomeDTO.getIncomeAmount() <= 0) {
+            validatorDTO.setStatus(true);
+            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_AMOUNT);
+            return validatorDTO;
+        }
 
         validatorDTO.setStatus(isValidIncomeDate);
         validatorDTO.setMessage(MessageConstants.INVALID_DATE);

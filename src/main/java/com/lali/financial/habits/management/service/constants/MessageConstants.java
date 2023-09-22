@@ -31,5 +31,6 @@ public class MessageConstants {
     public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
     public static final String INVALID_INCOME_DETAILS = "Invalid Income Details!";
     public static final String INVALID_DATE = "Invalid Date!";
+    public static final String INVALID_INCOME_AMOUNT = "Invalid Income Amount!";
 
 }
