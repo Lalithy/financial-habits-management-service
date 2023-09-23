@@ -12,6 +12,7 @@ import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.dtoi.IncomeDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Income;
 import com.lali.financial.habits.management.service.repository.IncomeRepository;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -87,6 +89,34 @@ public class IncomeServiceImpl implements IncomeService {
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    /**
+     * The method provide all incomes by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getIncomesByUserId(Integer userId) {
+        log.info("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<IncomeDTOI> allIncomes = incomeRepository.findByUserUserId(userId);
+
+        if (allIncomes.isEmpty()) {
+            log.warn("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_INCOMES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(allIncomes);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
 
     /**

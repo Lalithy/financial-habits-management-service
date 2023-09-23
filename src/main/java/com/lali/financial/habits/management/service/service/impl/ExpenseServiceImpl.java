@@ -106,7 +106,7 @@ public class ExpenseServiceImpl implements ExpenseService {
      * The method provide all expense by user id
      *
      * @param userId
-     * @returnResponseEntity<ResponseDTO>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override
@@ -117,8 +117,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserId(userId);
 
         if (allExpenses.isEmpty()) {
-            log.warn("ExpensesImpl.getExpensesByUserId Method : {}", MessageConstants.EXPENSE_IS_EMPTY);
-            response.setMessage(MessageConstants.CAN_NOT_FIND_EXPENSE);
+            log.warn("ExpensesImpl.getExpensesByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_EXPENSES);
             response.setStatus(HttpStatus.NOT_FOUND);
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

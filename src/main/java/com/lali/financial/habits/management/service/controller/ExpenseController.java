@@ -37,7 +37,7 @@ public class ExpenseController {
      */
     @PostMapping("/add")
     public ResponseEntity<ResponseDTO> addExpense(@Valid @RequestBody RequestExpenseDTO expenseDTO) {
-        log.info("ExpensesController.addExpense API : {}", MessageConstants.ACCESSED);
+        log.info("ExpenseController.addExpense API : {}", MessageConstants.ACCESSED);
         return expenseService.addExpense(expenseDTO);
     }
 
@@ -45,12 +45,12 @@ public class ExpenseController {
      * The API provide all expense by user id
      *
      * @param userId
-     * @returnResponseEntity<ResponseDTO>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
-    @GetMapping("/by-user")
+    @GetMapping("/get-by-user")
     public ResponseEntity<ResponseDTO> getExpenseByUserId(@Valid @RequestParam Integer userId) {
-        log.info("ExpensesController.getExpenseByUserId API : {}", MessageConstants.ACCESSED);
+        log.info("ExpenseController.getExpenseByUserId API : {}", MessageConstants.ACCESSED);
         return expenseService.getExpenseByUserId(userId);
     }
 

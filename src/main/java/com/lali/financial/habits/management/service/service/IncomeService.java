@@ -22,4 +22,13 @@ public interface IncomeService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> addIncome(RequestIncomeDTO incomeDTO);
+
+    /**
+     * The method provide all incomes by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getIncomesByUserId(Integer userId);
 }
