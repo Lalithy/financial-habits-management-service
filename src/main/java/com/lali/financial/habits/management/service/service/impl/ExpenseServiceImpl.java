@@ -12,6 +12,7 @@ import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.RequestExpenseDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.dtoi.ExpenseDTOI;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.entity.Expense;
 import com.lali.financial.habits.management.service.entity.GuestUser;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -98,6 +100,35 @@ public class ExpenseServiceImpl implements ExpenseService {
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    /**
+     * The method provide all expense by user id
+     *
+     * @param userId
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getExpenseByUserId(Integer userId) {
+
+        log.info("ExpensesImpl.getExpensesByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserId(userId);
+
+        if (allExpenses.isEmpty()) {
+            log.warn("ExpensesImpl.getExpensesByUserId Method : {}", MessageConstants.EXPENSE_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_EXPENSE);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_EXPENSES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(allExpenses);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
 
     /**

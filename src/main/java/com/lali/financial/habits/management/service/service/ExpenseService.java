@@ -23,4 +23,13 @@ public interface ExpenseService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> addExpense(RequestExpenseDTO expenseDTO);
+
+    /**
+     * The method provide all expense by user id
+     *
+     * @param userId
+     * @returnResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getExpenseByUserId(Integer userId);
 }
