@@ -20,8 +20,6 @@ import com.lali.financial.habits.management.service.service.BudgetCategoryServic
 import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.service.UserService;
 import com.lali.financial.habits.management.service.util.CommonUtilities;
-import com.lali.financial.habits.management.service.util.DateValidator;
-import com.lali.financial.habits.management.service.util.DateValidatorDateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -64,7 +62,7 @@ public class BudgetServiceImpl implements BudgetService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
-            LocalDateTime budgetDateTime = getBudgetDateTime(budgetDTO.getBudgetDate(), formatter);
+            LocalDateTime budgetDateTime = LocalDateTime.now();
 
             GuestUser user = userService.findUserById(budgetDTO.getUserId());
 
@@ -104,8 +102,6 @@ public class BudgetServiceImpl implements BudgetService {
      */
     private ValidatorDTO isValidateBudget(RequestBudgetDTO budgetDTO, DateTimeFormatter formatter) {
         log.info("BudgetServiceImpl.isValidateBudget Method : {}", MessageConstants.ACCESSED);
-        DateValidator validator = new DateValidatorDateTimeFormatter(formatter);
-        boolean isValidBudgetDate = !validator.isValid(budgetDTO.getBudgetDate());
         ValidatorDTO validatorDTO = new ValidatorDTO();
 
         if (budgetDTO.getBudgetAmount() <= 0) {
@@ -114,8 +110,8 @@ public class BudgetServiceImpl implements BudgetService {
             return validatorDTO;
         }
 
-        validatorDTO.setStatus(isValidBudgetDate);
-        validatorDTO.setMessage(MessageConstants.INVALID_DATE);
+        validatorDTO.setStatus(false);
+        validatorDTO.setMessage(MessageConstants.VALID);
         return validatorDTO;
     }
 

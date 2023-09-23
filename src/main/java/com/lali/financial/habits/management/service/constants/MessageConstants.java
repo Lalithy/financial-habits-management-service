@@ -40,6 +40,7 @@ public class MessageConstants {
     public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
     public static final String INVALID_INCOME_DETAILS = "Invalid Income Details!";
     public static final String INVALID_DATE = "Invalid Date!";
+    public static final String VALID = "Valid!";
     public static final String INVALID_INCOME_AMOUNT = "Invalid Income Amount!";
     public static final String INVALID_EXPENSE_AMOUNT = "Invalid Expense Amount!";
     public static final String INVALID_SAVINGS_DETAILS = "Invalid Savings Details!";

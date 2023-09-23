@@ -24,7 +24,6 @@ public class RequestBudgetDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 2633698247493389610L;
     private Double budgetAmount;
-    private String budgetDate;
     private Integer budgetCategoryId;
     private Integer userId;
 }
