@@ -11,7 +11,9 @@ package com.lali.financial.habits.management.service.service.impl;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
+import com.lali.financial.habits.management.service.dto.SumSavingsDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.dtoi.SavingsDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Savings;
 import com.lali.financial.habits.management.service.repository.SavingsRepository;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -87,6 +90,42 @@ public class SavingsServiceImpl implements SavingsService {
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    /**
+     * The method provide all savings by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getSavingsByUserId(Integer userId) {
+        log.info("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<SavingsDTOI> allSavings = savingsRepository.findByUserUserId(userId);
+
+        double sumOfSavingsAmount = allSavings.stream()
+                .mapToDouble(SavingsDTOI::getSavingsAmount)
+                .sum();
+
+        SumSavingsDTO sumSavingsDTO = SumSavingsDTO.builder()
+                .sumOfSavingsAmount(sumOfSavingsAmount)
+                .build();
+
+        if (allSavings.isEmpty()) {
+            log.warn("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_INCOMES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(sumSavingsDTO);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
 
     /**
