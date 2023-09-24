@@ -132,6 +132,41 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     /**
+     * The method delete an expense by expense id
+     *
+     * @param expenseId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> removeExpenseByUserId(Integer expenseId) {
+
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        boolean existsId = expenseRepository.existsById(expenseId);
+        if (!existsId) {
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_EXPENSE);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+
+        try {
+            expenseRepository.deleteByExpenseId(expenseId);
+            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.ok(responseDTO);
+        } catch (RuntimeException exception) {
+            log.error("ExpenseServiceImpl.removeExpenseByUserId Method : {}", exception.getMessage());
+            responseDTO.setMessage(MessageConstants.FAILED_DELETING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+    }
+
+    /**
      * The method if not exist save a location
      *
      * @param locationName

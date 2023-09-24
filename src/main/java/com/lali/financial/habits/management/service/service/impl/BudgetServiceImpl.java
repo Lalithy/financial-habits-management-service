@@ -9,13 +9,17 @@ package com.lali.financial.habits.management.service.service.impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.BudgetDTO;
 import com.lali.financial.habits.management.service.dto.RequestBudgetDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.dtoi.BudgetDTOI;
 import com.lali.financial.habits.management.service.entity.Budget;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
+import com.lali.financial.habits.management.service.entity.Expense;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.BudgetRepository;
+import com.lali.financial.habits.management.service.repository.ExpenseRepository;
 import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.service.UserService;
@@ -28,6 +32,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +43,7 @@ public class BudgetServiceImpl implements BudgetService {
     private final BudgetRepository budgetRepository;
     private final BudgetCategoryService budgetCategoryService;
     private final UserService userService;
+    private final ExpenseRepository expenseRepository;
 
     /**
      * The method add a budget
@@ -91,6 +98,62 @@ public class BudgetServiceImpl implements BudgetService {
         }
     }
 
+    /**
+     * The method provide all budget by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getBudgetByUserId(Integer userId) {
+
+        log.info("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<BudgetDTOI> allBudget = budgetRepository.findByUserUserId(userId);
+        List<Expense> allExpense = expenseRepository.findAll();
+
+        List<BudgetDTO> budgetDTOList = new ArrayList<>();
+
+        allBudget.forEach(budgetDTOI -> {
+                    
+
+                    BudgetDTO budgetDTO = new BudgetDTO();
+                    budgetDTO.setBudgetCategoryName(budgetDTOI.getBudgetCategory().getBudgetCategoryName());
+                    budgetDTO.setEstimatedBudget(budgetDTOI.getBudgetAmount());
+                    budgetDTO.setExpense(100.0);
+                    budgetDTO.setRemainingBudget(budgetDTOI.getBudgetAmount());
+                    budgetDTOList.add(budgetDTO);
+                }
+
+        );
+
+//        allBudget.forEach(budgetDTOI -> {
+//                    BudgetDTO budgetDTO = new BudgetDTO();
+//                    budgetDTO.setBudgetCategoryName("Test-" + budgetDTOI.getBudgetId());
+//                    budgetDTO.setEstimatedBudget(budgetDTOI.getBudgetAmount());
+//                    budgetDTO.setExpense(100.0);
+//                    budgetDTO.setRemainingBudget(budgetDTOI.getBudgetAmount() - 100.0);
+//                    budgetDTOList.add(budgetDTO);
+//                }
+//
+//        );
+
+        if (allBudget.isEmpty()) {
+            log.warn("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.BUDGET_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_BUDGET);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(budgetDTOList);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
 
     /**
      * The method validate budget details
@@ -106,26 +169,13 @@ public class BudgetServiceImpl implements BudgetService {
 
         if (budgetDTO.getBudgetAmount() <= 0) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_EXPENSE_AMOUNT);
+            validatorDTO.setMessage(MessageConstants.INVALID_BUDGET_AMOUNT);
             return validatorDTO;
         }
 
         validatorDTO.setStatus(false);
         validatorDTO.setMessage(MessageConstants.VALID);
         return validatorDTO;
-    }
-
-    /**
-     * The method provide a  LocalDateTime object of budget date
-     *
-     * @param budgetDate
-     * @param formatter
-     * @return LocalDateTime
-     * @author Lali..
-     */
-    private LocalDateTime getBudgetDateTime(String budgetDate, DateTimeFormatter formatter) {
-        log.info("BudgetServiceImpl.getBudgetDateTime Method : {}", MessageConstants.ACCESSED);
-        return CommonUtilities.convertStringToLocalDateTime(budgetDate, formatter);
     }
 
 }

@@ -32,6 +32,7 @@ public class Budget {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "budget_category_id", nullable = false)
+    @JsonIgnore
     private BudgetCategory budgetCategory;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)

@@ -54,4 +54,17 @@ public class ExpenseController {
         return expenseService.getExpenseByUserId(userId);
     }
 
+    /**
+     * The API delete an expense by expense id
+     *
+     * @param expenseId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @DeleteMapping("/remove")
+    public ResponseEntity<ResponseDTO> removeExpenseByUserId(@Valid @RequestParam Integer expenseId) {
+        log.info("ExpenseController.removeExpenseByUserId API : {}", MessageConstants.ACCESSED);
+        return expenseService.removeExpenseByUserId(expenseId);
+    }
+
 }

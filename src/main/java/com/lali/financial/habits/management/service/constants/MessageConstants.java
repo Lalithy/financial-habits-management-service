@@ -27,14 +27,17 @@ public class MessageConstants {
     public static final String AUTHENTICATION_FAILED = "Authentication Failed!";
     public static final String BUDGET_CATEGORY_IS_EMPTY = "Budget Category is Empty!";
     public static final String EXPENSES_IS_EMPTY = "Expenses is Empty!";
+    public static final String BUDGET_IS_EMPTY = "Budget is Empty!";
     public static final String INCOMES_IS_EMPTY = "Expenses is Empty!";
     public static final String INCOMES_IS_SAVINGS = "Savings is Empty!";
     public static final String FOUND_BUDGET_CATEGORIES = "Found Budget Categories!";
     public static final String FOUND_EXPENSES = "Found Expenses!";
+    public static final String FOUND_BUDGET = "Found Budget!";
     public static final String FOUND_INCOMES = "Found Incomes!";
     public static final String FOUND_SAVINGS = "Found savings!";
     public static final String CAN_NOT_FIND_BUDGET_CATEGORIES = "Can not find Budget Categories!";
     public static final String CAN_NOT_FIND_EXPENSES = "Can not find Expenses!";
+    public static final String CAN_NOT_FIND_BUDGET = "Can not find Budget!";
     public static final String CAN_NOT_FIND_INCOMES = "Can not find Incomes!";
     public static final String CAN_NOT_FIND_SAVINGS = "Can not find Savings!";
     public static final String USER_REGISTRATION_SUCCESSFUL = "User Registration Successful!";
@@ -43,6 +46,16 @@ public class MessageConstants {
     public static final String VALID = "Valid!";
     public static final String INVALID_INCOME_AMOUNT = "Invalid Income Amount!";
     public static final String INVALID_EXPENSE_AMOUNT = "Invalid Expense Amount!";
+    public static final String INVALID_BUDGET_AMOUNT = "Invalid Budget Amount!";
     public static final String INVALID_SAVINGS_DETAILS = "Invalid Savings Details!";
     public static final String INVALID_SAVINGS_AMOUNT = "Invalid Savings Amount!";
+    public static final String DOES_NOT_FOUND_EXPENSE = "Doesn't found Expense!";
+    public static final String DOES_NOT_FOUND_INCOME = "Doesn't found Income!";
+    public static final String DOES_NOT_FOUND_SAVING = "Doesn't found Saving!";
+    public static final String SUCCESSFULLY_DELETED = "Successfully Deleted!";
+    public static final String SUCCESSFULLY_INCOME = "Successfully Income!";
+    public static final String SUCCESSFULLY_SAVING = "Successfully Saving!";
+    public static final String FAILED_DELETING = "Failed Deleting!!";
+    public static final String FAILED_INCOME = "Failed Income!!";
+    public static final String FAILED_SAVING = "Failed Savings!!";
 }

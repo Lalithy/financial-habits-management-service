@@ -23,4 +23,12 @@ public interface BudgetService {
      */
     ResponseEntity<ResponseDTO> addBudget(RequestBudgetDTO budgetDTO);
 
+    /**
+     * The API provide all budget by user id
+     *
+     * @param expenseId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getBudgetByUserId(Integer userId);
 }

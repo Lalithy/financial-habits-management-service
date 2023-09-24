@@ -32,4 +32,13 @@ public interface ExpenseService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> getExpenseByUserId(Integer userId);
+
+    /**
+     * The method delete an expense expense id
+     *
+     * @param expenseId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> removeExpenseByUserId(Integer expenseId);
 }
