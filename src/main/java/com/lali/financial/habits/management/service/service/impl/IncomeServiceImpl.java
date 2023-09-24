@@ -133,8 +133,8 @@ public class IncomeServiceImpl implements IncomeService {
         ResponseDTO responseDTO = new ResponseDTO();
         boolean existsId = incomeRepository.existsById(incomeId);
         if (!existsId) {
-            log.warn("IncomeImpl.removeIncomeByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_EXPENSE);
-            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_EXPENSE);
+            log.warn("IncomeImpl.removeIncomeByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_INCOME);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_INCOME);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);

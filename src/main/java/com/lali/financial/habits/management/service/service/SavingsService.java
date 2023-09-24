@@ -31,4 +31,13 @@ public interface SavingsService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> getSavingsByUserId(Integer userId);
+
+    /**
+     * The method delete an savings by savings id
+     *
+     * @param savingsId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> removeSavingsByUserId(Long savingsId);
 }

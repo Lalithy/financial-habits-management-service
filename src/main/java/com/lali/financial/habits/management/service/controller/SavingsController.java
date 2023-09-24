@@ -49,8 +49,21 @@ public class SavingsController {
      */
     @GetMapping("/get-by-user")
     public ResponseEntity<ResponseDTO> getSavingsByUserId(@Valid @RequestParam Integer userId) {
-        log.info("IncomeController.getSavingsByUserId API : {}", MessageConstants.ACCESSED);
+        log.info("SavingsController.getSavingsByUserId API : {}", MessageConstants.ACCESSED);
         return savingsService.getSavingsByUserId(userId);
+    }
+
+    /**
+     * The API delete an savings by savings id
+     *
+     * @param savingsId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @DeleteMapping("/remove")
+    public ResponseEntity<ResponseDTO> removeSavingsByUserId(@Valid @RequestParam Long savingsId) {
+        log.info("SavingsController.removeSavingsByUserId API : {}", MessageConstants.ACCESSED);
+        return savingsService.removeSavingsByUserId(savingsId);
     }
 
 }

@@ -129,6 +129,44 @@ public class SavingsServiceImpl implements SavingsService {
     }
 
     /**
+     * The method delete an savings by savings id
+     *
+     * @param savingsId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> removeSavingsByUserId(Long savingsId) {
+
+        log.info("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO responseDTO = new ResponseDTO();
+        boolean existsId = savingsRepository.existsById(savingsId);
+        if (!existsId) {
+            log.warn("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_SAVING);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_SAVING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+
+        try {
+            Savings savings = savingsRepository.findById(savingsId).orElse(null);
+            savingsRepository.deleteBySavingsId(savingsId);
+            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
+            responseDTO.setDetails(savings.getSavingsDetails());
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.ok(responseDTO);
+        } catch (RuntimeException exception) {
+            log.error("SavingsServiceImpl.removeSavingsByUserId Method : {}", exception.getMessage());
+            responseDTO.setMessage(MessageConstants.FAILED_DELETING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+    }
+
+    /**
      * The method validate savings details
      *
      * @param savingsDTO

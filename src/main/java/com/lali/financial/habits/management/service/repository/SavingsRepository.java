@@ -39,6 +39,6 @@ public interface SavingsRepository extends JpaRepository<Savings, Long> {
     @Modifying
     @Transactional
     @Query("delete from Savings a where a.savingsId=?1")
-    void deleteBySavingsId(Integer savingsId);
+    void deleteBySavingsId(Long savingsId);
 
 }
