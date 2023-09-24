@@ -10,10 +10,7 @@ package com.lali.financial.habits.management.service.service.impl;
 
 import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.IncomeDTO;
-import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
 import com.lali.financial.habits.management.service.dto.dtoi.IncomeDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Income;
@@ -35,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_LLL_dd_HH_MM;
-import static com.lali.financial.habits.management.service.util.CommonUtilities.convertLocalDateTimeToString;
-import static com.lali.financial.habits.management.service.util.CommonUtilities.getDateTimeFormatter;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.*;
 
 @Service
 @RequiredArgsConstructor
@@ -106,12 +102,16 @@ public class IncomeServiceImpl implements IncomeService {
      * @author Lali..
      */
     @Override
-    public ResponseEntity<ResponseDTO> getIncomesByUserId(Integer userId) {
+    public ResponseEntity<IncomeResponseDTO> getIncomesByUserId(Integer userId) {
         log.info("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.ACCESSED);
-        ResponseDTO response = new ResponseDTO();
+        IncomeResponseDTO response = new IncomeResponseDTO();
         List<IncomeDTOI> allIncomes = incomeRepository.findByUserUserIdOrderByIncomeIdDesc(userId);
 
         DateTimeFormatter formatter = getDateTimeFormatter(YYYY_LLL_dd_HH_MM);
+
+        double totalIncome = allIncomes.stream()
+                .mapToDouble(IncomeDTOI::getIncomeAmount)
+                .sum();
 
         List<IncomeDTO> incomeList = new ArrayList<>();
         allIncomes.forEach(income -> {
@@ -127,13 +127,12 @@ public class IncomeServiceImpl implements IncomeService {
         if (allIncomes.isEmpty()) {
             log.warn("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
             response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
-            response.setStatus(HttpStatus.NOT_FOUND);
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         response.setMessage(MessageConstants.FOUND_INCOMES);
-        response.setStatus(HttpStatus.FOUND);
+        response.setTotalAmount(formatDoubleToStringTwoDecimalPoint(totalIncome));
         response.setDetails(incomeList);
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);

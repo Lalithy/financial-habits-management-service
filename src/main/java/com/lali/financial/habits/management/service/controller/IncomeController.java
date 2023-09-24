@@ -9,6 +9,7 @@ package com.lali.financial.habits.management.service.controller;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.IncomeResponseDTO;
 import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.service.IncomeService;
@@ -48,7 +49,7 @@ public class IncomeController {
      * @author Lali..
      */
     @GetMapping("/get-by-user")
-    public ResponseEntity<ResponseDTO> getIncomesByUserId(@Valid @RequestParam Integer userId) {
+    public ResponseEntity<IncomeResponseDTO> getIncomesByUserId(@Valid @RequestParam Integer userId) {
         log.info("IncomeController.getIncomesByUserId API : {}", MessageConstants.ACCESSED);
         return incomeService.getIncomesByUserId(userId);
     }
