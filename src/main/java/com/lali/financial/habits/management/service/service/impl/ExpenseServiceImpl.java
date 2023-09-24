@@ -112,12 +112,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ResponseEntity<ResponseDTO> getExpenseByUserId(Integer userId) {
 
-        log.info("ExpensesImpl.getExpensesByUserId Method : {}", MessageConstants.ACCESSED);
+        log.info("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
         List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserId(userId);
 
         if (allExpenses.isEmpty()) {
-            log.warn("ExpensesImpl.getExpensesByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
+            log.warn("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
             response.setMessage(MessageConstants.CAN_NOT_FIND_EXPENSES);
             response.setStatus(HttpStatus.NOT_FOUND);
             response.setTimestamp(LocalDateTime.now());
@@ -141,10 +141,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ResponseEntity<ResponseDTO> removeExpenseByUserId(Integer expenseId) {
 
+        log.info("ExpenseImpl.removeExpenseByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO responseDTO = new ResponseDTO();
-
         boolean existsId = expenseRepository.existsById(expenseId);
         if (!existsId) {
+            log.warn("ExpenseImpl.removeExpenseByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_EXPENSE);
             responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_EXPENSE);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             responseDTO.setTimestamp(LocalDateTime.now());
@@ -152,8 +153,10 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
 
         try {
+            Expense expense = expenseRepository.findById(expenseId).orElse(null);
             expenseRepository.deleteByExpenseId(expenseId);
             responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
+            responseDTO.setDetails(expense.getExpenseDetails());
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.ok(responseDTO);

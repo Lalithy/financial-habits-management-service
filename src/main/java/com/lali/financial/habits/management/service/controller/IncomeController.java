@@ -53,4 +53,17 @@ public class IncomeController {
         return incomeService.getIncomesByUserId(userId);
     }
 
+    /**
+     * The API delete an income by income id
+     *
+     * @param incomeId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @DeleteMapping("/remove")
+    public ResponseEntity<ResponseDTO> removeIncomeByUserId(@Valid @RequestParam Long incomeId) {
+        log.info("IncomeController.removeIncomeByUserId API : {}", MessageConstants.ACCESSED);
+        return incomeService.removeIncomeByUserId(incomeId);
+    }
+
 }

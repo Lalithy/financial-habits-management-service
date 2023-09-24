@@ -31,4 +31,13 @@ public interface IncomeService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> getIncomesByUserId(Integer userId);
+
+    /**
+     * The method delete an income by income id
+     *
+     * @param incomeId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> removeIncomeByUserId(Long incomeId);
 }
