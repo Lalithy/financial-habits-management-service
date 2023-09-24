@@ -8,6 +8,8 @@ package com.lali.financial.habits.management.service.dto.dtoi;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.entity.BudgetCategory;
+
 import java.time.LocalDateTime;
 
 public interface ExpenseDTOI {
@@ -19,4 +21,6 @@ public interface ExpenseDTOI {
     Double getExpenseAmount();
 
     LocalDateTime getExpenseDate();
+
+    BudgetCategory getBudgetCategory();
 }

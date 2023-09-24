@@ -9,6 +9,7 @@ package com.lali.financial.habits.management.service.service.impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.ExpenseDTO;
 import com.lali.financial.habits.management.service.dto.RequestExpenseDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -114,7 +116,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         log.info("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserId(userId);
+        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
 
         if (allExpenses.isEmpty()) {
             log.warn("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
@@ -124,9 +126,21 @@ public class ExpenseServiceImpl implements ExpenseService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        List<ExpenseDTO> expenseList = new ArrayList<>();
+        allExpenses.forEach(expense -> {
+            ExpenseDTO buildExpense = ExpenseDTO.builder()
+                    .expenseId(expense.getExpenseId())
+                    .expenseDetails(expense.getExpenseDetails())
+                    .expenseAmount(expense.getExpenseAmount())
+                    .expenseDate(expense.getExpenseDate())
+                    .expenseCategory(expense.getBudgetCategory().getBudgetCategoryName())
+                    .build();
+            expenseList.add(buildExpense);
+        });
+
         response.setMessage(MessageConstants.FOUND_EXPENSES);
         response.setStatus(HttpStatus.FOUND);
-        response.setDetails(allExpenses);
+        response.setDetails(expenseList);
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }

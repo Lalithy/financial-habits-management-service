@@ -28,7 +28,7 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
      * @return List<Expense>
      * @author Lali..
      */
-    List<IncomeDTOI> findByUserUserId(Integer userId);
+    List<IncomeDTOI> findByUserUserIdOrderByIncomeIdDesc(Integer userId);
 
     /**
      * The method delete income by income id

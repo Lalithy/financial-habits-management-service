@@ -102,7 +102,7 @@ public class IncomeServiceImpl implements IncomeService {
     public ResponseEntity<ResponseDTO> getIncomesByUserId(Integer userId) {
         log.info("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<IncomeDTOI> allIncomes = incomeRepository.findByUserUserId(userId);
+        List<IncomeDTOI> allIncomes = incomeRepository.findByUserUserIdOrderByIncomeIdDesc(userId);
 
         if (allIncomes.isEmpty()) {
             log.warn("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);

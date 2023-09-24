@@ -28,7 +28,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
      * @return List<Expense>
      * @author Lali..
      */
-    List<ExpenseDTOI> findByUserUserId(Integer userId);
+    List<ExpenseDTOI> findByUserUserIdOrderByExpenseIdDesc(Integer userId);
 
     /**
      * The method delete expense by expense id

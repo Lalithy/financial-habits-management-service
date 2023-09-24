@@ -25,6 +25,6 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer> {
      * @return
      * @author Lali..
      */
-    List<BudgetDTOI> findByUserUserId(Integer userId);
+    List<BudgetDTOI> findByUserUserIdOrderByBudgetIdAsc(Integer userId);
 
 }

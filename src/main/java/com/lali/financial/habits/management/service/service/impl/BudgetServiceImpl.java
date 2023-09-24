@@ -110,7 +110,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         log.info("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<BudgetDTOI> allBudget = budgetRepository.findByUserUserId(userId);
+        List<BudgetDTOI> allBudget = budgetRepository.findByUserUserIdOrderByBudgetIdAsc(userId);
         List<Expense> allExpense = expenseRepository.findAll();
 
         List<BudgetDTO> budgetDTOList = new ArrayList<>();

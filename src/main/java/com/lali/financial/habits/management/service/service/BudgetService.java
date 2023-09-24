@@ -26,7 +26,7 @@ public interface BudgetService {
     /**
      * The API provide all budget by user id
      *
-     * @param expenseId
+     * @param userId
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
