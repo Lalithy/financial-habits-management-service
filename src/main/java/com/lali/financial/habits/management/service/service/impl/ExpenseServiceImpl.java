@@ -82,8 +82,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
             BudgetCategory budgetCategory = budgetCategoryService.findBudgetCategoryById(expenseDTO.getBudgetCategoryId());
 
+            String expenseDetails = expenseDTO.getExpenseDetails();
+            if (expenseDetails == null) {
+                expenseDetails = "";
+            }
             Expense expense = Expense.builder()
-                    .expenseDetails(expenseDTO.getExpenseDetails())
+                    .expenseDetails(expenseDetails)
                     .expenseAmount(expenseDTO.getExpenseAmount())
                     .expenseDate(expenseDateTime)
                     .user(user)
