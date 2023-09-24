@@ -10,6 +10,7 @@ package com.lali.financial.habits.management.service.service.impl;
 
 import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
+import com.lali.financial.habits.management.service.dto.IncomeDTO;
 import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import com.lali.financial.habits.management.service.dto.ValidatorDTO;
@@ -30,7 +31,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_LLL_dd_HH_MM;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.convertLocalDateTimeToString;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.getDateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -105,6 +111,19 @@ public class IncomeServiceImpl implements IncomeService {
         ResponseDTO response = new ResponseDTO();
         List<IncomeDTOI> allIncomes = incomeRepository.findByUserUserIdOrderByIncomeIdDesc(userId);
 
+        DateTimeFormatter formatter = getDateTimeFormatter(YYYY_LLL_dd_HH_MM);
+
+        List<IncomeDTO> incomeList = new ArrayList<>();
+        allIncomes.forEach(income -> {
+            IncomeDTO buildIncome = IncomeDTO.builder()
+                    .incomeId(income.getIncomeId())
+                    .incomeDetails(income.getIncomeDetails())
+                    .incomeAmount(income.getIncomeAmount())
+                    .incomeDate(convertLocalDateTimeToString(income.getIncomeDate(), formatter))
+                    .build();
+            incomeList.add(buildIncome);
+        });
+
         if (allIncomes.isEmpty()) {
             log.warn("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
             response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
@@ -115,7 +134,7 @@ public class IncomeServiceImpl implements IncomeService {
 
         response.setMessage(MessageConstants.FOUND_INCOMES);
         response.setStatus(HttpStatus.FOUND);
-        response.setDetails(allIncomes);
+        response.setDetails(incomeList);
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }
