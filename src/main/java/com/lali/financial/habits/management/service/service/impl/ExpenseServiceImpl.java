@@ -23,7 +23,6 @@ import com.lali.financial.habits.management.service.repository.LocationRepositor
 import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.service.ExpenseService;
 import com.lali.financial.habits.management.service.service.UserService;
-import com.lali.financial.habits.management.service.util.CommonUtilities;
 import com.lali.financial.habits.management.service.util.DateValidator;
 import com.lali.financial.habits.management.service.util.DateValidatorDateTimeFormatter;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_LLL_dd_HH_MM;
+import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_MM_dd_HH_MM_SS;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.*;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +64,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
+            DateTimeFormatter formatter = getDateTimeFormatter(YYYY_MM_dd_HH_MM_SS);
             ValidatorDTO validateExpense = isValidateExpense(expenseDTO, formatter);
             if (validateExpense.isStatus()) {
                 log.warn("ExpenseServiceImpl.addExpense Method : {}", MessageConstants.VALIDATION_FAILED);
@@ -126,13 +129,15 @@ public class ExpenseServiceImpl implements ExpenseService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        DateTimeFormatter formatter = getDateTimeFormatter(YYYY_LLL_dd_HH_MM);
+
         List<ExpenseDTO> expenseList = new ArrayList<>();
         allExpenses.forEach(expense -> {
             ExpenseDTO buildExpense = ExpenseDTO.builder()
                     .expenseId(expense.getExpenseId())
                     .expenseDetails(expense.getExpenseDetails())
                     .expenseAmount(expense.getExpenseAmount())
-                    .expenseDate(expense.getExpenseDate())
+                    .expenseDate(convertLocalDateTimeToString(expense.getExpenseDate(), formatter))
                     .expenseCategory(expense.getBudgetCategory().getBudgetCategoryName())
                     .build();
             expenseList.add(buildExpense);
@@ -239,6 +244,6 @@ public class ExpenseServiceImpl implements ExpenseService {
      */
     private LocalDateTime getExpenseDateTime(String expenseDate, DateTimeFormatter formatter) {
         log.info("ExpenseServiceImpl.getExpenseDateTime Method : {}", MessageConstants.ACCESSED);
-        return CommonUtilities.convertStringToLocalDateTime(expenseDate, formatter);
+        return convertStringToLocalDateTime(expenseDate, formatter);
     }
 }

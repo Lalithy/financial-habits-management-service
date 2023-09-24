@@ -63,13 +63,26 @@ public class CommonUtilities {
     }
 
     /**
+     * The method convert LocalDateTime to string date object by date & formatter
+     *
+     * @param date
+     * @param formatter
+     * @return
+     * @author Lali..
+     */
+    public static String convertLocalDateTimeToString(LocalDateTime date, DateTimeFormatter formatter) {
+        log.info("CommonUtilities.convertLocalDateTimeToString Method : {}", MessageConstants.ACCESSED);
+        return formatter.format(date);
+    }
+
+    /**
      * The method provide a date pattern -> yyyy-MM-dd HH:mm:ss
      *
      * @return DateTimeFormatter
      * @author Lali..
      */
-    public static DateTimeFormatter getDateTimeFormatter() {
+    public static DateTimeFormatter getDateTimeFormatter(String pattern) {
         log.info("CommonUtilities.getDateTimeFormatter Method : {}", MessageConstants.ACCESSED);
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return DateTimeFormatter.ofPattern(pattern);
     }
 }

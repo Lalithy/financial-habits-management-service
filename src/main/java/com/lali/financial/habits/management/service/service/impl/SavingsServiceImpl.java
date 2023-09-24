@@ -8,6 +8,7 @@ package com.lali.financial.habits.management.service.service.impl;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
@@ -55,7 +56,7 @@ public class SavingsServiceImpl implements SavingsService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
+            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter(CommonConstants.YYYY_MM_dd_HH_MM_SS);
             ValidatorDTO validateSavings = isValidateSavings(savingsDTO, formatter);
             if (validateSavings.isStatus()) {
                 log.warn("SavingsServiceImpl.addSavings Method : {}", MessageConstants.VALIDATION_FAILED);

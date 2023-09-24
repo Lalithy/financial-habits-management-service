@@ -8,6 +8,7 @@ package com.lali.financial.habits.management.service.service.impl;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.BudgetDTO;
 import com.lali.financial.habits.management.service.dto.RequestBudgetDTO;
@@ -59,7 +60,7 @@ public class BudgetServiceImpl implements BudgetService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
+            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter(CommonConstants.YYYY_MM_dd_HH_MM_SS);
             ValidatorDTO validateBudget = isValidateBudget(budgetDTO, formatter);
             if (validateBudget.isStatus()) {
                 log.warn("BudgetServiceImpl.addBudget Method : {}", MessageConstants.VALIDATION_FAILED);

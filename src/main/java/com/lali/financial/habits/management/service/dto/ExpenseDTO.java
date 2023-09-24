@@ -12,7 +12,6 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -26,7 +25,7 @@ public class ExpenseDTO implements Serializable {
     private Integer expenseId;
     private String expenseDetails;
     private Double expenseAmount;
-    private LocalDateTime expenseDate;
+    private String expenseDate;
     private String expenseCategory;
 
 }
