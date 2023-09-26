@@ -10,15 +10,14 @@ package com.lali.financial.habits.management.service.service.impl;
 
 import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.BudgetDTO;
-import com.lali.financial.habits.management.service.dto.RequestBudgetDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
+import com.lali.financial.habits.management.service.dto.dtoi.BudgetCategoryDTOI;
 import com.lali.financial.habits.management.service.dto.dtoi.BudgetDTOI;
+import com.lali.financial.habits.management.service.dto.dtoi.ExpenseDTOI;
 import com.lali.financial.habits.management.service.entity.Budget;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
-import com.lali.financial.habits.management.service.entity.Expense;
 import com.lali.financial.habits.management.service.entity.GuestUser;
+import com.lali.financial.habits.management.service.repository.BudgetCategoryRepository;
 import com.lali.financial.habits.management.service.repository.BudgetRepository;
 import com.lali.financial.habits.management.service.repository.ExpenseRepository;
 import com.lali.financial.habits.management.service.service.BudgetCategoryService;
@@ -35,6 +34,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +46,7 @@ public class BudgetServiceImpl implements BudgetService {
     private final BudgetCategoryService budgetCategoryService;
     private final UserService userService;
     private final ExpenseRepository expenseRepository;
+    private final BudgetCategoryRepository budgetCategoryRepository;
 
     /**
      * The method add a budget
@@ -111,34 +113,54 @@ public class BudgetServiceImpl implements BudgetService {
 
         log.info("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<BudgetDTOI> allBudget = budgetRepository.findByUserUserIdOrderByBudgetIdAsc(userId);
-        List<Expense> allExpense = expenseRepository.findAll();
-
+        List<BudgeExpenseDTO> budgetExpenseList = new ArrayList<>();
         List<BudgetDTO> budgetDTOList = new ArrayList<>();
 
-        allBudget.forEach(budgetDTOI -> {
-                    
+        List<BudgetDTOI> allBudget = budgetRepository.findByUserUserIdOrderByBudgetIdAsc(userId);
+        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
+        List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
 
+        allBudgetCategories.forEach(budgetCategory -> {
+            BudgeExpenseDTO budgeExpenseDTO = new BudgeExpenseDTO();
+            budgeExpenseDTO.setBudgetCategory(budgetCategory.getBudgetCategoryName());
+            AtomicReference<Double> expenseAmount = new AtomicReference<>(0.0);
+            allExpenses.forEach(expense -> {
+                if (Objects.equals(budgetCategory.getBudgetCategoryId(),
+                        expense.getBudgetCategory().getBudgetCategoryId())) {
+                    expenseAmount.updateAndGet(value -> value + expense.getExpenseAmount());
+                    budgeExpenseDTO.setAmount(expenseAmount.get());
+                }
+            });
+            budgetExpenseList.add(budgeExpenseDTO);
+        });
+
+        allBudget.forEach(budgetDTOI -> {
                     BudgetDTO budgetDTO = new BudgetDTO();
+                    budgetDTO.setBudgetCategoryId(budgetDTOI.getBudgetCategory().getBudgetCategoryId());
                     budgetDTO.setBudgetCategoryName(budgetDTOI.getBudgetCategory().getBudgetCategoryName());
-                    budgetDTO.setEstimatedBudget(budgetDTOI.getBudgetAmount());
-                    budgetDTO.setExpense(100.0);
-                    budgetDTO.setRemainingBudget(budgetDTOI.getBudgetAmount());
+                    Double budgetAmount = budgetDTOI.getBudgetAmount();
+
+                    budgetDTO.setEstimatedBudget(0.00);
+                    budgetDTO.setEstimatedBudget(budgetAmount);
+
+                    AtomicReference<Double> tempExpense = new AtomicReference<>(0.0);
+                    AtomicReference<Double> tempBudgetAmount = new AtomicReference<>(budgetAmount);
+                    budgetExpenseList.forEach(budgeExpense -> {
+                        if (budgeExpense.getBudgetCategory()
+                                .equals(budgetDTOI.getBudgetCategory().getBudgetCategoryName())) {
+                            Double expense = budgeExpense.getAmount();
+                            if (expense != null && budgetAmount != null) {
+                                tempExpense.set(expense);
+                                tempBudgetAmount.set(budgetAmount);
+                            }
+                        }
+                    });
+                    budgetDTO.setExpense(tempExpense.get());
+                    budgetDTO.setRemainingBudget(tempBudgetAmount.get() - tempExpense.get());
                     budgetDTOList.add(budgetDTO);
                 }
-
         );
 
-//        allBudget.forEach(budgetDTOI -> {
-//                    BudgetDTO budgetDTO = new BudgetDTO();
-//                    budgetDTO.setBudgetCategoryName("Test-" + budgetDTOI.getBudgetId());
-//                    budgetDTO.setEstimatedBudget(budgetDTOI.getBudgetAmount());
-//                    budgetDTO.setExpense(100.0);
-//                    budgetDTO.setRemainingBudget(budgetDTOI.getBudgetAmount() - 100.0);
-//                    budgetDTOList.add(budgetDTO);
-//                }
-//
-//        );
 
         if (allBudget.isEmpty()) {
             log.warn("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.BUDGET_IS_EMPTY);
