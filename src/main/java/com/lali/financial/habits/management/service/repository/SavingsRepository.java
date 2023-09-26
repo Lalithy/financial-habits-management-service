@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -28,7 +29,7 @@ public interface SavingsRepository extends JpaRepository<Savings, Long> {
      * @return List<Expense>
      * @author Lali..
      */
-    List<SavingsDTOI> findByUserUserId(Integer userId);
+    List<SavingsDTOI> findByUserUserIdAndSavingsDateBetweenOrderBySavingsIdDesc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
 
     /**
      * The method delete saving by savings id

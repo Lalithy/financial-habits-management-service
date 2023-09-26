@@ -10,10 +10,7 @@ package com.lali.financial.habits.management.service.service.impl;
 
 import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.SumSavingsDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
 import com.lali.financial.habits.management.service.dto.dtoi.SavingsDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Savings;
@@ -32,6 +29,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static com.lali.financial.habits.management.service.util.CommonUtilities.getFirstOfCurrentMonthToCurrentDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -104,7 +103,12 @@ public class SavingsServiceImpl implements SavingsService {
     public ResponseEntity<ResponseDTO> getSavingsByUserId(Integer userId) {
         log.info("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<SavingsDTOI> allSavings = savingsRepository.findByUserUserId(userId);
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<SavingsDTOI> allSavings = savingsRepository
+                .findByUserUserIdAndSavingsDateBetweenOrderBySavingsIdDesc(userId, fromDate, toDate);
 
         double sumOfSavingsAmount = allSavings.stream()
                 .mapToDouble(SavingsDTOI::getSavingsAmount)
