@@ -44,16 +44,15 @@ public class ReportController {
     }
 
     /**
-     * The API provide expense incomes by user id & requested a month
+     * The API provide previous monthList fromCurrent month
      *
-     * @param userId
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
-    @GetMapping("/month")
-    public ResponseEntity<ResponseDTO> getMonth(@Valid @RequestParam Integer userId, Integer month) {
-        log.info("ReportController.getExpenseDetailReport API : {}", MessageConstants.ACCESSED);
-        return reportService.getExpenseDetailReport(userId, month);
+    @GetMapping("/months")
+    public ResponseEntity<ResponseDTO> getPreviousMonthListFromCurrentMonth() {
+        log.info("ReportController.getPreviousMonthListFromCurrentMonth API : {}", MessageConstants.ACCESSED);
+        return reportService.getPreviousMonthListFromCurrentMonth();
     }
 
 

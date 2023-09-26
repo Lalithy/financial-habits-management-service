@@ -22,7 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.lali.financial.habits.management.service.util.CommonUtilities.getFromAndToDateByMonth;
@@ -69,6 +72,34 @@ public class ReportServiceImpl implements ReportService {
         response.setMessage(MessageConstants.FOUND_EXPENSES);
         response.setStatus(HttpStatus.FOUND);
         response.setDetails(expenseList);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    /**
+     * The method provide previous monthList fromCurrent month
+     *
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getPreviousMonthListFromCurrentMonth() {
+
+        log.info("ReportServiceImpl.getPreviousMonthListFromCurrentMonth Method : {}", MessageConstants.ACCESSED);
+
+        ResponseDTO response = new ResponseDTO();
+        int monthValue = LocalDate.now().getMonthValue();
+        List<String> months = Arrays
+                .asList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        List<String> filteredMonths = new ArrayList<>();
+
+        for (int i = 0; i < monthValue; i++) {
+            filteredMonths.add(months.get(i));
+        }
+
+        response.setMessage(MessageConstants.FOUND_MONTHS);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(filteredMonths);
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
     }

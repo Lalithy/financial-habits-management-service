@@ -22,4 +22,12 @@ public interface ReportService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> getExpenseDetailReport(Integer userId, Integer month);
+
+    /**
+     * The method provide previous monthList fromCurrent month
+     *
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getPreviousMonthListFromCurrentMonth();
 }

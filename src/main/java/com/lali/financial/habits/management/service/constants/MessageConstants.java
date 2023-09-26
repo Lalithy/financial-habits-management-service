@@ -34,7 +34,8 @@ public class MessageConstants {
     public static final String FOUND_EXPENSES = "Found Expenses!";
     public static final String FOUND_BUDGET = "Found Budget!";
     public static final String FOUND_INCOMES = "Found Incomes!";
-    public static final String FOUND_SAVINGS = "Found savings!";
+    public static final String FOUND_SAVINGS = "Found Savings!";
+    public static final String FOUND_MONTHS = "Found Months!";
     public static final String CAN_NOT_FIND_BUDGET_CATEGORIES = "Can not find Budget Categories!";
     public static final String CAN_NOT_FIND_EXPENSES = "Can not find Expenses!";
     public static final String CAN_NOT_FIND_BUDGET = "Can not find Budget!";
