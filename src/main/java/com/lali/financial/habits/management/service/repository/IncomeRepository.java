@@ -16,19 +16,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface IncomeRepository extends JpaRepository<Income, Long> {
 
     /**
-     * The method provide incomes by user id
+     * The method provide incomes by user id & between income date
      *
      * @param userId
      * @return List<Expense>
      * @author Lali..
      */
-    List<IncomeDTOI> findByUserUserIdOrderByIncomeIdDesc(Integer userId);
+    List<IncomeDTOI> findByUserUserIdAndIncomeDateBetweenOrderByIncomeIdDesc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
 
     /**
      * The method delete income by income id

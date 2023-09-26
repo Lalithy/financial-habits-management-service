@@ -105,7 +105,13 @@ public class IncomeServiceImpl implements IncomeService {
     public ResponseEntity<IncomeResponseDTO> getIncomesByUserId(Integer userId) {
         log.info("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.ACCESSED);
         IncomeResponseDTO response = new IncomeResponseDTO();
-        List<IncomeDTOI> allIncomes = incomeRepository.findByUserUserIdOrderByIncomeIdDesc(userId);
+
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<IncomeDTOI> allIncomes = incomeRepository
+                .findByUserUserIdAndIncomeDateBetweenOrderByIncomeIdDesc(userId, fromDate, toDate);
 
         DateTimeFormatter formatter = getDateTimeFormatter(YYYY_LLL_dd_HH_MM);
 
