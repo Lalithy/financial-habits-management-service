@@ -43,4 +43,18 @@ public class ReportController {
         return reportService.getExpenseDetailReport(userId, month);
     }
 
+    /**
+     * The API provide expense incomes by user id & requested a month
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @GetMapping("/month")
+    public ResponseEntity<ResponseDTO> getMonth(@Valid @RequestParam Integer userId, Integer month) {
+        log.info("ReportController.getExpenseDetailReport API : {}", MessageConstants.ACCESSED);
+        return reportService.getExpenseDetailReport(userId, month);
+    }
+
+
 }

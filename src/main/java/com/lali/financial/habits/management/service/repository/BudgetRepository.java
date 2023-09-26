@@ -13,6 +13,7 @@ import com.lali.financial.habits.management.service.entity.Budget;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -25,6 +26,7 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer> {
      * @return
      * @author Lali..
      */
-    List<BudgetDTOI> findByUserUserIdOrderByBudgetIdAsc(Integer userId);
+    List<BudgetDTOI> findByUserUserIdAndBudgetDateBetweenOrderByBudgetIdAsc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
+
 
 }

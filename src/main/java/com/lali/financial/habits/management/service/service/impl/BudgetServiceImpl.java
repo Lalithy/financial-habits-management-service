@@ -118,11 +118,12 @@ public class BudgetServiceImpl implements BudgetService {
         List<BudgeExpenseDTO> budgetExpenseList = new ArrayList<>();
         List<BudgetDTO> budgetDTOList = new ArrayList<>();
 
-        List<BudgetDTOI> allBudget = budgetRepository.findByUserUserIdOrderByBudgetIdAsc(userId);
         FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
         LocalDateTime fromDate = fromToDate.getFromDate();
         LocalDateTime toDate = fromToDate.getToDate();
 
+        List<BudgetDTOI> allBudget = budgetRepository
+                .findByUserUserIdAndBudgetDateBetweenOrderByBudgetIdAsc(userId, fromDate, toDate);
         List<ExpenseDTOI> allExpenses = expenseRepository
                 .findByUserUserIdAndExpenseDateBetweenOrderByExpenseIdDesc(userId, fromDate, toDate);
         List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
