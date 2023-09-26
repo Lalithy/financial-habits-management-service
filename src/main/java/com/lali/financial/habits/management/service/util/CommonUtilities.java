@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -113,6 +114,29 @@ public class CommonUtilities {
         LocalDateTime fromDate = LocalDateTime
                 .of(LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1), LocalTime.of(0, 0, 0));
         LocalDateTime toDate = LocalDateTime.now();
+
+        return FromToDateDTO.builder()
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .build();
+    }
+
+    /**
+     * The method provide 1st of month to today fromDate & toDate
+     *
+     * @return FromToDateDTO
+     * @author Lali..
+     */
+    public static FromToDateDTO getFromAndToDateByMonth(Integer month) {
+        log.info("CommonUtilities.getFromAndToDateByMonth Method : {}", ACCESSED);
+
+        LocalDateTime fromDate = LocalDateTime
+                .of(LocalDate.of(LocalDate.now().getYear(), month, 1), LocalTime.of(0, 0, 0));
+
+        YearMonth yearMonth = YearMonth.from(fromDate);
+        LocalDate endOfMonth = yearMonth.atEndOfMonth();
+        LocalDateTime toDate = LocalDateTime
+                .of(endOfMonth, LocalTime.of(23, 59, 59));
 
         return FromToDateDTO.builder()
                 .fromDate(fromDate)

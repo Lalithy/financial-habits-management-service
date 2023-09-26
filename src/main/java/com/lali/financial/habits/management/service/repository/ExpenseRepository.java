@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -28,7 +29,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
      * @return List<Expense>
      * @author Lali..
      */
-    List<ExpenseDTOI> findByUserUserIdOrderByExpenseIdDesc(Integer userId);
+    List<ExpenseDTOI> findByUserUserIdAndExpenseDateBetweenOrderByExpenseIdDesc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
 
     /**
      * The method delete expense by expense id

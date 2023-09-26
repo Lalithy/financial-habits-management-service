@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.lali.financial.habits.management.service.util.CommonUtilities.getFirstOfCurrentMonthToCurrentDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -117,7 +119,12 @@ public class BudgetServiceImpl implements BudgetService {
         List<BudgetDTO> budgetDTOList = new ArrayList<>();
 
         List<BudgetDTOI> allBudget = budgetRepository.findByUserUserIdOrderByBudgetIdAsc(userId);
-        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<ExpenseDTOI> allExpenses = expenseRepository
+                .findByUserUserIdAndExpenseDateBetweenOrderByExpenseIdDesc(userId, fromDate, toDate);
         List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
 
         allBudgetCategories.forEach(budgetCategory -> {
