@@ -107,8 +107,23 @@ public class SavingsServiceImpl implements SavingsService {
         LocalDateTime fromDate = fromToDate.getFromDate();
         LocalDateTime toDate = fromToDate.getToDate();
 
-        List<SavingsDTOI> allSavings = savingsRepository
-                .findByUserUserIdAndSavingsDateBetweenOrderBySavingsIdDesc(userId, fromDate, toDate);
+        List<SavingsDTOI> allSavingsList = savingsRepository
+                .findByUserUserIdOrderBySavingsIdDesc(userId);
+
+        if (allSavingsList.isEmpty()) {
+            log.warn("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        List<SavingsDTOI> allSavings = allSavingsList.stream()
+                .filter(expense -> expense.getSavingsDate().isAfter(fromDate)
+                        && expense.getSavingsDate().isBefore(toDate)
+                        || expense.getSavingsDate().isEqual(fromDate)
+                        || expense.getSavingsDate().isEqual(toDate))
+                .toList();
 
         double sumOfSavingsAmount = allSavings.stream()
                 .mapToDouble(SavingsDTOI::getSavingsAmount)
@@ -117,14 +132,6 @@ public class SavingsServiceImpl implements SavingsService {
         SumSavingsDTO sumSavingsDTO = SumSavingsDTO.builder()
                 .sumOfSavingsAmount(sumOfSavingsAmount)
                 .build();
-
-        if (allSavings.isEmpty()) {
-            log.warn("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
-            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.setTimestamp(LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
 
         response.setMessage(MessageConstants.FOUND_INCOMES);
         response.setStatus(HttpStatus.FOUND);

@@ -29,7 +29,7 @@ public interface SavingsRepository extends JpaRepository<Savings, Long> {
      * @return List<Expense>
      * @author Lali..
      */
-    List<SavingsDTOI> findByUserUserIdAndSavingsDateBetweenOrderBySavingsIdDesc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
+    List<SavingsDTOI> findByUserUserIdOrderBySavingsIdDesc(Integer userId);
 
     /**
      * The method delete saving by savings id
