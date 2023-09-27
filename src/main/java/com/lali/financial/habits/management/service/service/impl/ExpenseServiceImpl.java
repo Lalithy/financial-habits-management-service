@@ -125,8 +125,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         LocalDateTime fromDate = fromToDate.getFromDate();
         LocalDateTime toDate = fromToDate.getToDate();
 
-        List<ExpenseDTOI> allExpenses = expenseRepository
-                .findByUserUserIdAndExpenseDateBetweenOrderByExpenseIdDesc(userId, fromDate, toDate);
+        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
 
         if (allExpenses.isEmpty()) {
             log.warn("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
@@ -136,7 +135,14 @@ public class ExpenseServiceImpl implements ExpenseService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        List<ExpenseDTO> expenseList = getExpenseList(allExpenses);
+        List<ExpenseDTOI> allExpensesList = allExpenses.stream()
+                .filter(expense -> expense.getExpenseDate().isAfter(fromDate)
+                        && expense.getExpenseDate().isBefore(toDate)
+                        || expense.getExpenseDate().isEqual(fromDate)
+                        || expense.getExpenseDate().isEqual(toDate))
+                .toList();
+
+        List<ExpenseDTO> expenseList = getExpenseList(allExpensesList);
 
         response.setMessage(MessageConstants.FOUND_EXPENSES);
         response.setStatus(HttpStatus.FOUND);
