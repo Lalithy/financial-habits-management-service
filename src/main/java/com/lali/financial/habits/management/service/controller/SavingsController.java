@@ -56,14 +56,14 @@ public class SavingsController {
     /**
      * The API delete an savings by savings id
      *
-     * @param savingsId
+     * @param userId
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @DeleteMapping("/remove")
-    public ResponseEntity<ResponseDTO> removeSavingsByUserId(@Valid @RequestParam Long savingsId) {
+    public ResponseEntity<ResponseDTO> removeSavingsByUserId(@Valid @RequestParam Integer userId) {
         log.info("SavingsController.removeSavingsByUserId API : {}", MessageConstants.ACCESSED);
-        return savingsService.removeSavingsByUserId(savingsId);
+        return savingsService.removeSavingsByUserId(userId);
     }
 
 }

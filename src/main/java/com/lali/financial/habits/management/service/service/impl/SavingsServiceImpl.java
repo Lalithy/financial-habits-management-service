@@ -136,29 +136,34 @@ public class SavingsServiceImpl implements SavingsService {
     /**
      * The method delete an savings by savings id
      *
-     * @param savingsId
+     * @param userId
      * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override
-    public ResponseEntity<ResponseDTO> removeSavingsByUserId(Long savingsId) {
+    public ResponseEntity<ResponseDTO> removeSavingsByUserId(Integer userId) {
 
         log.info("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean existsId = savingsRepository.existsById(savingsId);
-        if (!existsId) {
-            log.warn("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_SAVING);
-            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_SAVING);
+
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<Long> savingsList = savingsRepository
+                .findByUserIdAndSavingsDateBetween(userId, fromDate, toDate);
+        if (savingsList.isEmpty()) {
+            log.warn("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_SAVING_FOR_REMOVING);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_SAVING_FOR_REMOVING);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
 
         try {
-            Savings savings = savingsRepository.findById(savingsId).orElse(null);
-            savingsRepository.deleteBySavingsId(savingsId);
+            savingsList.forEach(savingsRepository::deleteBySavingsId);
             responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
-            responseDTO.setDetails(savings.getSavingsDetails());
+            responseDTO.setDetails(savingsList);
             responseDTO.setStatus(HttpStatus.OK);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.ok(responseDTO);

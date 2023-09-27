@@ -190,8 +190,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         ResponseDTO responseDTO = new ResponseDTO();
         boolean existsId = expenseRepository.existsById(expenseId);
         if (!existsId) {
-            log.warn("ExpenseImpl.removeExpenseByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_EXPENSE);
-            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_EXPENSE);
+            log.warn("ExpenseImpl.removeExpenseByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_EXPENSE_FOR_REMOVING);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_EXPENSE_FOR_REMOVING);
             responseDTO.setStatus(HttpStatus.BAD_REQUEST);
             responseDTO.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);

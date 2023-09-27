@@ -50,9 +50,9 @@ public class MessageConstants {
     public static final String INVALID_BUDGET_AMOUNT = "Invalid Budget Amount!";
     public static final String INVALID_SAVINGS_DETAILS = "Invalid Savings Details!";
     public static final String INVALID_SAVINGS_AMOUNT = "Invalid Savings Amount!";
-    public static final String DOES_NOT_FOUND_EXPENSE = "Doesn't found Expense!";
-    public static final String DOES_NOT_FOUND_INCOME = "Doesn't found Income!";
-    public static final String DOES_NOT_FOUND_SAVING = "Doesn't found Saving!";
+    public static final String DOES_NOT_FOUND_EXPENSE_FOR_REMOVING = "Doesn't found Expense for Removing!";
+    public static final String DOES_NOT_FOUND_INCOME_FOR_REMOVING = "Doesn't found Income for Removing!";
+    public static final String DOES_NOT_FOUND_SAVING_FOR_REMOVING = "Doesn't found Saving for Removing!";
     public static final String SUCCESSFULLY_DELETED = "Successfully Deleted!";
     public static final String SUCCESSFULLY_INCOME = "Successfully Income!";
     public static final String SUCCESSFULLY_SAVING = "Successfully Saving!";
