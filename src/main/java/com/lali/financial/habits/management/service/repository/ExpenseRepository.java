@@ -30,6 +30,16 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
      * @author Lali..
      */
     List<ExpenseDTOI> findByUserUserIdOrderByExpenseIdDesc(Integer userId);
+
+    /**
+     * The method provide expenses by user id & between two dates
+     *
+     * @param userId
+     * @param fromDate
+     * @param toDate
+     * @return List<ExpenseDTOI>
+     * @author Lali..
+     */
     List<ExpenseDTOI> findByUserUserIdAndExpenseDateBetweenOrderByExpenseIdDesc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
 
     /**
