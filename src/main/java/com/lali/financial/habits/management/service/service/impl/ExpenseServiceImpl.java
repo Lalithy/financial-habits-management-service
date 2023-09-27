@@ -120,11 +120,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         log.info("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-
-        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
-        LocalDateTime fromDate = fromToDate.getFromDate();
-        LocalDateTime toDate = fromToDate.getToDate();
-
         List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
 
         if (allExpenses.isEmpty()) {
@@ -134,6 +129,10 @@ public class ExpenseServiceImpl implements ExpenseService {
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
 
         List<ExpenseDTOI> allExpensesList = allExpenses.stream()
                 .filter(expense -> expense.getExpenseDate().isAfter(fromDate)
