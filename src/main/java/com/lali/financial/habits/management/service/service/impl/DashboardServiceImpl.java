@@ -18,7 +18,6 @@ import com.lali.financial.habits.management.service.dto.dtoi.ExpenseDTOI;
 import com.lali.financial.habits.management.service.repository.BudgetCategoryRepository;
 import com.lali.financial.habits.management.service.repository.ExpenseRepository;
 import com.lali.financial.habits.management.service.service.DashboardService;
-import com.lali.financial.habits.management.service.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,7 +39,6 @@ import static com.lali.financial.habits.management.service.util.CommonUtilities.
 public class DashboardServiceImpl implements DashboardService {
 
     private final ExpenseRepository expenseRepository;
-    private final ExpenseService expenseService;
     private final BudgetCategoryRepository budgetCategoryRepository;
 
     /**
@@ -65,24 +63,40 @@ public class DashboardServiceImpl implements DashboardService {
         List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
 
         allBudgetCategories.forEach(budgetCategory -> {
-            BudgeExpenseDTO budgeExpenseDTO = new BudgeExpenseDTO();
-            budgeExpenseDTO.setBudgetCategory(budgetCategory.getBudgetCategoryName());
-            AtomicReference<Double> expenseAmount = new AtomicReference<>(0.0);
-            budgeExpenseDTO.setAmount(0.0);
-            allExpenses.forEach(expense -> {
-                if (Objects.equals(budgetCategory.getBudgetCategoryId(),
-                        expense.getBudgetCategory().getBudgetCategoryId())) {
-                    expenseAmount.updateAndGet(value -> value + expense.getExpenseAmount());
-                    budgeExpenseDTO.setAmount(expenseAmount.get());
-                }
-            });
-            budgetExpenseList.add(budgeExpenseDTO);
+            BudgeExpenseDTO budgeExpense = getBudgeExpense(allExpenses, budgetCategory);
+            budgetExpenseList.add(budgeExpense);
         });
 
-
+        response.setMessage(MessageConstants.FOUND_EXPENSES);
+        response.setStatus(HttpStatus.FOUND);
         response.setDetails(budgetExpenseList);
+        response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
 
+    }
+
+    /**
+     * The method provide budget expense
+     *
+     * @param allExpenses
+     * @param budgetCategory
+     * @return BudgeExpenseDTO
+     * @author Lali..
+     */
+    private static BudgeExpenseDTO getBudgeExpense(List<ExpenseDTOI> allExpenses, BudgetCategoryDTOI budgetCategory) {
+        log.info("DashboardServiceImpl.getBudgeExpense Method : {}", MessageConstants.ACCESSED);
+        BudgeExpenseDTO budgeExpenseDTO = new BudgeExpenseDTO();
+        budgeExpenseDTO.setBudgetCategory(budgetCategory.getBudgetCategoryName());
+        AtomicReference<Double> expenseAmount = new AtomicReference<>(0.0);
+        budgeExpenseDTO.setAmount(0.0);
+        allExpenses.forEach(expense -> {
+            if (Objects.equals(budgetCategory.getBudgetCategoryId(),
+                    expense.getBudgetCategory().getBudgetCategoryId())) {
+                expenseAmount.updateAndGet(value -> value + expense.getExpenseAmount());
+                budgeExpenseDTO.setAmount(expenseAmount.get());
+            }
+        });
+        return budgeExpenseDTO;
     }
 
     /**
@@ -132,8 +146,8 @@ public class DashboardServiceImpl implements DashboardService {
             FromToDateDTO tempFromToDate = getFromAndToDateByMonth(monthValue);
             List<ExpenseDTOI> tempExpenseList = getExpenseByMonth(allExpensesLastSixMonths, tempFromToDate);
             double totalExpenses = getTotalExpenses(tempExpenseList);
-            ExpensesStatisticsDTO buildExpenses = buildExpensesStatistics(monthName, totalExpenses);
-            expensesStatisticsList.add(buildExpenses);
+            ExpensesStatisticsDTO expense = getExpensesStatistics(monthName, totalExpenses);
+            expensesStatisticsList.add(expense);
         }
 
         setDescendingOrderExpensesStatistics(expensesStatisticsList);
@@ -164,7 +178,7 @@ public class DashboardServiceImpl implements DashboardService {
      * @return ExpensesStatisticsDTO
      * @author Lali..
      */
-    private ExpensesStatisticsDTO buildExpensesStatistics(String monthName, double totalExpenses) {
+    private ExpensesStatisticsDTO getExpensesStatistics(String monthName, double totalExpenses) {
         log.info("DashboardServiceImpl.buildExpensesStatistics Method : {}", MessageConstants.ACCESSED);
         return ExpensesStatisticsDTO.builder()
                 .month(monthName)
