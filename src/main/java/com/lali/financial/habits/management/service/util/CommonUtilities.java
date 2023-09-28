@@ -108,8 +108,11 @@ public class CommonUtilities {
      */
     public static FromToDateDTO getFirstOfCurrentMonthToCurrentDateTime() {
         log.info("CommonUtilities.getFirstOfCurrentMonthToCurrentDateTime Method : {}", ACCESSED);
+
+        LocalDate localDate = LocalDate.now();
+
         LocalDateTime fromDate = LocalDateTime
-                .of(LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1), LocalTime.of(0, 0, 0));
+                .of(LocalDate.of(localDate.getYear(), LocalDate.now().getMonth(), 1), LocalTime.of(0, 0, 0));
         LocalDateTime toDate = LocalDateTime.now();
 
         return FromToDateDTO.builder()
@@ -127,8 +130,10 @@ public class CommonUtilities {
     public static FromToDateDTO getFromAndToDateByMonth(Integer month) {
         log.info("CommonUtilities.getFromAndToDateByMonth Method : {}", ACCESSED);
 
+        LocalDate localDate = LocalDate.now();
+
         LocalDateTime fromDate = LocalDateTime
-                .of(LocalDate.of(LocalDate.now().getYear(), month, 1), LocalTime.of(0, 0, 0));
+                .of(LocalDate.of(localDate.getYear(), month, 1), LocalTime.of(0, 0, 0));
 
         YearMonth yearMonth = YearMonth.from(fromDate);
         LocalDate endOfMonth = yearMonth.atEndOfMonth();
@@ -156,7 +161,7 @@ public class CommonUtilities {
         LocalDateTime fromDate = LocalDateTime
                 .of(LocalDate.of(year, month, 1), LocalTime.of(0, 0, 0));
 
-        LocalDateTime toDate = LocalDateTime.now(ZoneId.of("Asia/Colombo"));
+        LocalDateTime toDate = LocalDateTime.now();
 
         return FromToDateDTO.builder()
                 .fromDate(fromDate)

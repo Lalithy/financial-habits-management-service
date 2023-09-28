@@ -8,7 +8,6 @@ package com.lali.financial.habits.management.service.service.impl;
  * ==================================================
  **/
 
-import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
 import com.lali.financial.habits.management.service.dto.*;
 import com.lali.financial.habits.management.service.dto.dtoi.BudgetCategoryDTOI;
@@ -23,7 +22,6 @@ import com.lali.financial.habits.management.service.repository.ExpenseRepository
 import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.service.BudgetService;
 import com.lali.financial.habits.management.service.service.UserService;
-import com.lali.financial.habits.management.service.util.CommonUtilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -64,8 +61,7 @@ public class BudgetServiceImpl implements BudgetService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter(CommonConstants.YYYY_MM_dd_HH_MM_SS);
-            ValidatorDTO validateBudget = isValidateBudget(budgetDTO, formatter);
+            ValidatorDTO validateBudget = isValidateBudget(budgetDTO);
             if (validateBudget.isStatus()) {
                 log.warn("BudgetServiceImpl.addBudget Method : {}", MessageConstants.VALIDATION_FAILED);
                 response.setMessage(validateBudget.getMessage());
@@ -74,14 +70,38 @@ public class BudgetServiceImpl implements BudgetService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
+            FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+            LocalDateTime fromDate = fromToDate.getFromDate();
+            LocalDateTime toDate = fromToDate.getToDate();
+
+            Integer budgetCategoryId = budgetDTO.getBudgetCategoryId();
+            Integer userId = budgetDTO.getUserId();
+            Double budgetAmount = budgetDTO.getBudgetAmount();
+
+            List<Budget> existsBudgetIdList = budgetRepository
+                    .findByBudgetCategoryBudgetCategoryIdAndUserUserIdAndBudgetDateBetween(budgetCategoryId, userId, fromDate, toDate);
+
+            if (!existsBudgetIdList.isEmpty()) {
+                Budget budget = existsBudgetIdList.stream().findAny().get();
+                budget.setBudgetAmount(budgetAmount);
+                budgetRepository.save(budget);
+
+                response.setMessage(MessageConstants.SUCCESSFULLY_CREATED);
+                response.setStatus(HttpStatus.OK);
+                response.setTimestamp(LocalDateTime.now());
+                response.setDetails(budget);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+
+            }
+
             LocalDateTime budgetDateTime = LocalDateTime.now();
 
-            GuestUser user = userService.findUserById(budgetDTO.getUserId());
+            GuestUser user = userService.findUserById(userId);
 
-            BudgetCategory budgetCategory = budgetCategoryService.findBudgetCategoryById(budgetDTO.getBudgetCategoryId());
+            BudgetCategory budgetCategory = budgetCategoryService.findBudgetCategoryById(budgetCategoryId);
 
             Budget budget = Budget.builder()
-                    .budgetAmount(budgetDTO.getBudgetAmount())
+                    .budgetAmount(budgetAmount)
                     .budgetDate(budgetDateTime)
                     .user(user)
                     .budgetCategory(budgetCategory)
@@ -190,11 +210,10 @@ public class BudgetServiceImpl implements BudgetService {
      * The method validate budget details
      *
      * @param budgetDTO
-     * @param formatter
      * @return ValidatorDTO
      * @author Lali..
      */
-    private ValidatorDTO isValidateBudget(RequestBudgetDTO budgetDTO, DateTimeFormatter formatter) {
+    private ValidatorDTO isValidateBudget(RequestBudgetDTO budgetDTO) {
         log.info("BudgetServiceImpl.isValidateBudget Method : {}", MessageConstants.ACCESSED);
         ValidatorDTO validatorDTO = new ValidatorDTO();
 
