@@ -101,6 +101,7 @@ public class SavingsServiceImpl implements SavingsService {
      */
     @Override
     public ResponseEntity<ResponseDTO> getSavingsByUserId(Integer userId) {
+
         log.info("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
         FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
@@ -110,34 +111,51 @@ public class SavingsServiceImpl implements SavingsService {
         List<SavingsDTOI> allSavingsList = savingsRepository
                 .findByUserUserIdOrderBySavingsIdDesc(userId);
 
-        if (allSavingsList.isEmpty()) {
-            log.warn("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
-            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.setTimestamp(LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+        List<SavingsDTOI> allSavings = getSavings(fromDate, toDate, allSavingsList);
 
-        List<SavingsDTOI> allSavings = allSavingsList.stream()
-                .filter(expense -> expense.getSavingsDate().isAfter(fromDate)
-                        && expense.getSavingsDate().isBefore(toDate)
-                        || expense.getSavingsDate().isEqual(fromDate)
-                        || expense.getSavingsDate().isEqual(toDate))
-                .toList();
+        double sumOfSavingsAmount = getSumOfSavingsAmount(allSavings);
 
-        double sumOfSavingsAmount = allSavings.stream()
-                .mapToDouble(SavingsDTOI::getSavingsAmount)
-                .sum();
-
-        SumSavingsDTO sumSavingsDTO = SumSavingsDTO.builder()
+        SumSavingsDTO sumSavings = SumSavingsDTO.builder()
                 .sumOfSavingsAmount(sumOfSavingsAmount)
                 .build();
 
         response.setMessage(MessageConstants.FOUND_INCOMES);
         response.setStatus(HttpStatus.FOUND);
-        response.setDetails(sumSavingsDTO);
+        response.setDetails(sumSavings);
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    /**
+     * The method provide sum of savings amount
+     *
+     * @param allSavings
+     * @return double
+     * @author Lali..
+     */
+    private double getSumOfSavingsAmount(List<SavingsDTOI> allSavings) {
+        return allSavings.stream()
+                .mapToDouble(SavingsDTOI::getSavingsAmount)
+                .sum();
+    }
+
+    /**
+     * The method provide savings
+     *
+     * @param fromDate
+     * @param toDate
+     * @param allSavingsList
+     * @return List<SavingsDTOI>
+     * @author Lali..
+     */
+    private List<SavingsDTOI> getSavings(LocalDateTime fromDate, LocalDateTime toDate, List<SavingsDTOI> allSavingsList) {
+        log.info("SavingsImpl.getSavings Method : {}", MessageConstants.ACCESSED);
+        return allSavingsList.stream()
+                .filter(expense -> expense.getSavingsDate().isAfter(fromDate)
+                        && expense.getSavingsDate().isBefore(toDate)
+                        || expense.getSavingsDate().isEqual(fromDate)
+                        || expense.getSavingsDate().isEqual(toDate))
+                .toList();
     }
 
     /**
