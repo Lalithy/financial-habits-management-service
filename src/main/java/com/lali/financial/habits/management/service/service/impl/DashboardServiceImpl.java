@@ -125,36 +125,85 @@ public class DashboardServiceImpl implements DashboardService {
         List<ExpenseDTOI> allExpensesLastSixMonths = getExpensesByUserAndBetweenDate(userId, fromDate, toDate);
 
         for (int i = 5; i >= 0; i--) {
-
             YearMonth date = YearMonth.now().minusMonths(i);
             String monthName = date.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
             int monthValue = date.getMonthValue();
 
             FromToDateDTO tempFromToDate = getFromAndToDateByMonth(monthValue);
-            LocalDateTime tempFromDate = tempFromToDate.getFromDate();
-            LocalDateTime tempToDate = tempFromToDate.getToDate();
-
-            List<ExpenseDTOI> tempExpenseList = allExpensesLastSixMonths.stream()
-                    .filter(expense -> expense.getExpenseDate().isAfter(tempFromDate)
-                            && expense.getExpenseDate().isBefore(tempToDate)
-                            || expense.getExpenseDate().isEqual(tempFromDate)
-                            || expense.getExpenseDate().isEqual(tempToDate))
-                    .toList();
-
-            double totalExpenses = tempExpenseList.stream()
-                    .mapToDouble(ExpenseDTOI::getExpenseAmount)
-                    .sum();
-
-            ExpensesStatisticsDTO buildExpenses = ExpensesStatisticsDTO.builder()
-                    .month(monthName)
-                    .expenseTotal(totalExpenses)
-                    .build();
-
+            List<ExpenseDTOI> tempExpenseList = getExpenseByMonth(allExpensesLastSixMonths, tempFromToDate);
+            double totalExpenses = getTotalExpenses(tempExpenseList);
+            ExpensesStatisticsDTO buildExpenses = buildExpensesStatistics(monthName, totalExpenses);
             expensesStatisticsList.add(buildExpenses);
         }
-        Collections.reverse(expensesStatisticsList);
 
+        setDescendingOrderExpensesStatistics(expensesStatisticsList);
+
+        response.setMessage(MessageConstants.FOUND_EXPENSES);
+        response.setStatus(HttpStatus.FOUND);
         response.setDetails(expensesStatisticsList);
+        response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    /**
+     * The method set expense statistics lis order by descending
+     *
+     * @param expensesStatisticsList
+     * @author Lali..
+     */
+    private void setDescendingOrderExpensesStatistics(List<ExpensesStatisticsDTO> expensesStatisticsList) {
+        log.info("DashboardServiceImpl.setDescendingOrderExpensesStatistics Method : {}", MessageConstants.ACCESSED);
+        Collections.reverse(expensesStatisticsList);
+    }
+
+    /**
+     * The method provide expenses statistics by month & total expenses
+     *
+     * @param monthName
+     * @param totalExpenses
+     * @return ExpensesStatisticsDTO
+     * @author Lali..
+     */
+    private ExpensesStatisticsDTO buildExpensesStatistics(String monthName, double totalExpenses) {
+        log.info("DashboardServiceImpl.buildExpensesStatistics Method : {}", MessageConstants.ACCESSED);
+        return ExpensesStatisticsDTO.builder()
+                .month(monthName)
+                .expenseTotal(totalExpenses)
+                .build();
+    }
+
+    /**
+     * The method provide list expenses of expense by month
+     *
+     * @param allExpensesLastSixMonths
+     * @param fromToDate
+     * @return List<ExpenseDTOI>
+     * @author Lali..
+     */
+    private List<ExpenseDTOI> getExpenseByMonth(List<ExpenseDTOI> allExpensesLastSixMonths, FromToDateDTO fromToDate) {
+        log.info("DashboardServiceImpl.getExpenseByMonth Method : {}", MessageConstants.ACCESSED);
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        return allExpensesLastSixMonths.stream()
+                .filter(expense -> expense.getExpenseDate().isAfter(fromDate)
+                        && expense.getExpenseDate().isBefore(toDate)
+                        || expense.getExpenseDate().isEqual(fromDate)
+                        || expense.getExpenseDate().isEqual(toDate))
+                .toList();
+    }
+
+    /**
+     * The method provide total expense by expense list
+     *
+     * @param tempExpenseList
+     * @return double
+     * @author Lali..
+     */
+    private double getTotalExpenses(List<ExpenseDTOI> tempExpenseList) {
+        log.info("DashboardServiceImpl.getTotalExpenses Method : {}", MessageConstants.ACCESSED);
+        return tempExpenseList.stream()
+                .mapToDouble(ExpenseDTOI::getExpenseAmount)
+                .sum();
     }
 }
