@@ -124,6 +124,15 @@ public class BudgetServiceImpl implements BudgetService {
 
         List<BudgetDTOI> allBudget = budgetRepository
                 .findByUserUserIdAndBudgetDateBetweenOrderByBudgetIdAsc(userId, fromDate, toDate);
+
+        if (allBudget.isEmpty()) {
+            log.warn("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.BUDGET_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
         List<ExpenseDTOI> allExpenses = expenseRepository
                 .findByUserUserIdAndExpenseDateBetweenOrderByExpenseIdDesc(userId, fromDate, toDate);
         List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
@@ -168,15 +177,6 @@ public class BudgetServiceImpl implements BudgetService {
                     budgetDTOList.add(budgetDTO);
                 }
         );
-
-
-        if (allBudget.isEmpty()) {
-            log.warn("BudgetImpl.getBudgetByUserId Method : {}", MessageConstants.BUDGET_IS_EMPTY);
-            response.setMessage(MessageConstants.CAN_NOT_FIND_BUDGET);
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.setTimestamp(LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
 
         response.setMessage(MessageConstants.FOUND_BUDGET);
         response.setStatus(HttpStatus.FOUND);

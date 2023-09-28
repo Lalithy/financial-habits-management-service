@@ -11,10 +11,7 @@ package com.lali.financial.habits.management.service.util;
 import com.lali.financial.habits.management.service.dto.FromToDateDTO;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.YearMonth;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -137,6 +134,29 @@ public class CommonUtilities {
         LocalDate endOfMonth = yearMonth.atEndOfMonth();
         LocalDateTime toDate = LocalDateTime
                 .of(endOfMonth, LocalTime.of(23, 59, 59));
+
+        return FromToDateDTO.builder()
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .build();
+    }
+
+
+    /**
+     * The method provide "from date" and "to date" of  current date by provided year and month
+     *
+     * @param year
+     * @param month
+     * @return FromToDateDTO
+     * @author Lali..
+     */
+    public static FromToDateDTO getFromAndToDateByMonthAndYear(Integer year, Integer month) {
+        log.info("CommonUtilities.getFromAndToDateByMonth Method : {}", ACCESSED);
+
+        LocalDateTime fromDate = LocalDateTime
+                .of(LocalDate.of(year, month, 1), LocalTime.of(0, 0, 0));
+
+        LocalDateTime toDate = LocalDateTime.now(ZoneId.of("Asia/Colombo"));
 
         return FromToDateDTO.builder()
                 .fromDate(fromDate)
