@@ -8,6 +8,7 @@ package com.lali.financial.habits.management.service.service;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.dto.IncomeResponseDTO;
 import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
 import org.springframework.http.ResponseEntity;
@@ -22,4 +23,22 @@ public interface IncomeService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> addIncome(RequestIncomeDTO incomeDTO);
+
+    /**
+     * The method provide all incomes by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<IncomeResponseDTO> getIncomesByUserId(Integer userId);
+
+    /**
+     * The method delete an income by income id
+     *
+     * @param incomeId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> removeIncomeByUserId(Long incomeId);
 }

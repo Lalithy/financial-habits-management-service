@@ -2,9 +2,9 @@ package com.lali.financial.habits.management.service.dto;
 
 /* ==================================================
  * Author: Lali..
- * Created Date: 9/22/2023
+ * Created Date: 9/24/2023
  * Project: financial-habits-management-service
- * Description: RequestBudgetDTO
+ * Description: IncomeResponseDTO
  * ==================================================
  **/
 
@@ -15,15 +15,19 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestBudgetDTO implements Serializable {
+public class IncomeResponseDTO implements Serializable {
+
     @Serial
-    private static final long serialVersionUID = 2633698247493389610L;
-    private Double budgetAmount;
-    private Integer budgetCategoryId;
-    private Integer userId;
+    private static final long serialVersionUID = 696165170598410310L;
+
+    private String message;
+    private String totalAmount;
+    private Object details;
+    private LocalDateTime timestamp;
 }

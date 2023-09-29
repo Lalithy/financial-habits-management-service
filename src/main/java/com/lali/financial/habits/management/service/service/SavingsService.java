@@ -23,4 +23,21 @@ public interface SavingsService {
      */
     ResponseEntity<ResponseDTO> addSavings(RequestSavingsDTO savingsDTO);
 
+    /**
+     * The method provide all savings by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getSavingsByUserId(Integer userId);
+
+    /**
+     * The method delete an savings by savings id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> removeSavingsByUserId(Integer userId);
 }

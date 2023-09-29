@@ -9,9 +9,8 @@ package com.lali.financial.habits.management.service.service.impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestExpenseDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
+import com.lali.financial.habits.management.service.dto.dtoi.ExpenseDTOI;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.entity.Expense;
 import com.lali.financial.habits.management.service.entity.GuestUser;
@@ -21,7 +20,6 @@ import com.lali.financial.habits.management.service.repository.LocationRepositor
 import com.lali.financial.habits.management.service.service.BudgetCategoryService;
 import com.lali.financial.habits.management.service.service.ExpenseService;
 import com.lali.financial.habits.management.service.service.UserService;
-import com.lali.financial.habits.management.service.util.CommonUtilities;
 import com.lali.financial.habits.management.service.util.DateValidator;
 import com.lali.financial.habits.management.service.util.DateValidatorDateTimeFormatter;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +30,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_LLL_dd_HH_MM;
+import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_MM_dd_HH_MM_SS;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +61,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
+            DateTimeFormatter formatter = getDateTimeFormatter(YYYY_MM_dd_HH_MM_SS);
             ValidatorDTO validateExpense = isValidateExpense(expenseDTO, formatter);
             if (validateExpense.isStatus()) {
                 log.warn("ExpenseServiceImpl.addExpense Method : {}", MessageConstants.VALIDATION_FAILED);
@@ -75,8 +79,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
             BudgetCategory budgetCategory = budgetCategoryService.findBudgetCategoryById(expenseDTO.getBudgetCategoryId());
 
+            String expenseDetails = expenseDTO.getExpenseDetails();
+            if (expenseDetails == null) {
+                expenseDetails = "";
+            }
             Expense expense = Expense.builder()
-                    .expenseDetails(expenseDTO.getExpenseDetails())
+                    .expenseDetails(expenseDetails)
                     .expenseAmount(expenseDTO.getExpenseAmount())
                     .expenseDate(expenseDateTime)
                     .user(user)
@@ -97,6 +105,112 @@ public class ExpenseServiceImpl implements ExpenseService {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    /**
+     * The method provide all expense by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getExpenseByUserId(Integer userId) {
+
+        log.info("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
+
+        if (allExpenses.isEmpty()) {
+            log.warn("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_EXPENSES);
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<ExpenseDTOI> allExpensesList = allExpenses.stream()
+                .filter(expense -> expense.getExpenseDate().isAfter(fromDate)
+                        && expense.getExpenseDate().isBefore(toDate)
+                        || expense.getExpenseDate().isEqual(fromDate)
+                        || expense.getExpenseDate().isEqual(toDate))
+                .toList();
+
+        List<ExpenseDTO> expenseList = getExpenseList(allExpensesList);
+
+        response.setMessage(MessageConstants.FOUND_EXPENSES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(expenseList);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    /**
+     * The method provide list of formatted expenses by expenses list
+     *
+     * @param allExpenses
+     * @return List<ExpenseDTO>
+     * @author Lali..
+     */
+    @Override
+    public List<ExpenseDTO> getExpenseList(List<ExpenseDTOI> allExpenses) {
+        log.info("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.ACCESSED);
+        DateTimeFormatter formatter = getDateTimeFormatter(YYYY_LLL_dd_HH_MM);
+
+        List<ExpenseDTO> expenseList = new ArrayList<>();
+        allExpenses.forEach(expense -> {
+            ExpenseDTO buildExpense = ExpenseDTO.builder()
+                    .expenseId(expense.getExpenseId())
+                    .expenseDetails(expense.getExpenseDetails())
+                    .expenseAmount(expense.getExpenseAmount())
+                    .expenseDate(convertLocalDateTimeToString(expense.getExpenseDate(), formatter))
+                    .expenseCategory(expense.getBudgetCategory().getBudgetCategoryName())
+                    .build();
+            expenseList.add(buildExpense);
+        });
+        return expenseList;
+    }
+
+    /**
+     * The method delete an expense by expense id
+     *
+     * @param expenseId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> removeExpenseByUserId(Integer expenseId) {
+
+        log.info("ExpenseImpl.removeExpenseByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO responseDTO = new ResponseDTO();
+        boolean existsId = expenseRepository.existsById(expenseId);
+        if (!existsId) {
+            log.warn("ExpenseImpl.removeExpenseByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_EXPENSE_FOR_REMOVING);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_EXPENSE_FOR_REMOVING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+
+        try {
+            Expense expense = expenseRepository.findById(expenseId).orElse(null);
+            expenseRepository.deleteByExpenseId(expenseId);
+            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
+            responseDTO.setDetails(expense.getExpenseDetails());
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.ok(responseDTO);
+        } catch (RuntimeException exception) {
+            log.error("ExpenseServiceImpl.removeExpenseByUserId Method : {}", exception.getMessage());
+            responseDTO.setMessage(MessageConstants.FAILED_DELETING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
 
@@ -156,6 +270,6 @@ public class ExpenseServiceImpl implements ExpenseService {
      */
     private LocalDateTime getExpenseDateTime(String expenseDate, DateTimeFormatter formatter) {
         log.info("ExpenseServiceImpl.getExpenseDateTime Method : {}", MessageConstants.ACCESSED);
-        return CommonUtilities.convertStringToLocalDateTime(expenseDate, formatter);
+        return convertStringToLocalDateTime(expenseDate, formatter);
     }
 }

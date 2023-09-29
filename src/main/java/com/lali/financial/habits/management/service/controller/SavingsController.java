@@ -15,10 +15,7 @@ import com.lali.financial.habits.management.service.service.SavingsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -41,6 +38,32 @@ public class SavingsController {
     public ResponseEntity<ResponseDTO> addSavings(@Valid @RequestBody RequestSavingsDTO savingsDTO) {
         log.info("SavingsController.addSavings API : {}", MessageConstants.ACCESSED);
         return savingsService.addSavings(savingsDTO);
+    }
+
+    /**
+     * The API provide all savings by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @GetMapping("/get-by-user")
+    public ResponseEntity<ResponseDTO> getSavingsByUserId(@Valid @RequestParam Integer userId) {
+        log.info("SavingsController.getSavingsByUserId API : {}", MessageConstants.ACCESSED);
+        return savingsService.getSavingsByUserId(userId);
+    }
+
+    /**
+     * The API delete an savings by savings id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @DeleteMapping("/remove")
+    public ResponseEntity<ResponseDTO> removeSavingsByUserId(@Valid @RequestParam Integer userId) {
+        log.info("SavingsController.removeSavingsByUserId API : {}", MessageConstants.ACCESSED);
+        return savingsService.removeSavingsByUserId(userId);
     }
 
 }

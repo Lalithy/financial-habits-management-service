@@ -8,10 +8,10 @@ package com.lali.financial.habits.management.service.service.impl;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestSavingsDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
+import com.lali.financial.habits.management.service.dto.dtoi.SavingsDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Savings;
 import com.lali.financial.habits.management.service.repository.SavingsRepository;
@@ -28,6 +28,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import static com.lali.financial.habits.management.service.util.CommonUtilities.getFirstOfCurrentMonthToCurrentDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +55,7 @@ public class SavingsServiceImpl implements SavingsService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
+            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter(CommonConstants.YYYY_MM_dd_HH_MM_SS);
             ValidatorDTO validateSavings = isValidateSavings(savingsDTO, formatter);
             if (validateSavings.isStatus()) {
                 log.warn("SavingsServiceImpl.addSavings Method : {}", MessageConstants.VALIDATION_FAILED);
@@ -86,6 +89,115 @@ public class SavingsServiceImpl implements SavingsService {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    /**
+     * The method provide all savings by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> getSavingsByUserId(Integer userId) {
+
+        log.info("SavingsImpl.getSavingsByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO response = new ResponseDTO();
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<SavingsDTOI> allSavingsList = savingsRepository
+                .findByUserUserIdOrderBySavingsIdDesc(userId);
+
+        List<SavingsDTOI> allSavings = getSavings(fromDate, toDate, allSavingsList);
+
+        double sumOfSavingsAmount = getSumOfSavingsAmount(allSavings);
+
+        SumSavingsDTO sumSavings = SumSavingsDTO.builder()
+                .sumOfSavingsAmount(sumOfSavingsAmount)
+                .build();
+
+        response.setMessage(MessageConstants.FOUND_INCOMES);
+        response.setStatus(HttpStatus.FOUND);
+        response.setDetails(sumSavings);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    /**
+     * The method provide sum of savings amount
+     *
+     * @param allSavings
+     * @return double
+     * @author Lali..
+     */
+    private double getSumOfSavingsAmount(List<SavingsDTOI> allSavings) {
+        return allSavings.stream()
+                .mapToDouble(SavingsDTOI::getSavingsAmount)
+                .sum();
+    }
+
+    /**
+     * The method provide savings
+     *
+     * @param fromDate
+     * @param toDate
+     * @param allSavingsList
+     * @return List<SavingsDTOI>
+     * @author Lali..
+     */
+    private List<SavingsDTOI> getSavings(LocalDateTime fromDate, LocalDateTime toDate, List<SavingsDTOI> allSavingsList) {
+        log.info("SavingsImpl.getSavings Method : {}", MessageConstants.ACCESSED);
+        return allSavingsList.stream()
+                .filter(expense -> expense.getSavingsDate().isAfter(fromDate)
+                        && expense.getSavingsDate().isBefore(toDate)
+                        || expense.getSavingsDate().isEqual(fromDate)
+                        || expense.getSavingsDate().isEqual(toDate))
+                .toList();
+    }
+
+    /**
+     * The method delete an savings by savings id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> removeSavingsByUserId(Integer userId) {
+
+        log.info("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<Long> savingsList = savingsRepository
+                .findByUserIdAndSavingsDateBetween(userId, fromDate, toDate);
+        if (savingsList.isEmpty()) {
+            log.warn("SavingsImpl.removeSavingsByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_SAVING_FOR_REMOVING);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_SAVING_FOR_REMOVING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+
+        try {
+            savingsList.forEach(savingsRepository::deleteBySavingsId);
+            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
+            responseDTO.setDetails(savingsList);
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.ok(responseDTO);
+        } catch (RuntimeException exception) {
+            log.error("SavingsServiceImpl.removeSavingsByUserId Method : {}", exception.getMessage());
+            responseDTO.setMessage(MessageConstants.FAILED_DELETING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
 

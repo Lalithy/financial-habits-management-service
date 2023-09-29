@@ -151,7 +151,7 @@ public class BudgetCategoryServiceImpl implements BudgetCategoryService {
      * The method provide all budget categories by user id
      *
      * @param userId
-     * @returnResponseEntity<ResponseDTO>
+     * @return ResponseEntity<ResponseDTO>
      * @author Lali..
      */
     @Override

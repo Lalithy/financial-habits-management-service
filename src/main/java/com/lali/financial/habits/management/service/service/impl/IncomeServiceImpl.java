@@ -8,10 +8,10 @@ package com.lali.financial.habits.management.service.service.impl;
  * ==================================================
  **/
 
+import com.lali.financial.habits.management.service.constants.CommonConstants;
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.RequestIncomeDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
+import com.lali.financial.habits.management.service.dto.*;
+import com.lali.financial.habits.management.service.dto.dtoi.IncomeDTOI;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.entity.Income;
 import com.lali.financial.habits.management.service.repository.IncomeRepository;
@@ -28,6 +28,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.lali.financial.habits.management.service.constants.CommonConstants.YYYY_LLL_dd_HH_MM;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.*;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +57,7 @@ public class IncomeServiceImpl implements IncomeService {
         ResponseDTO response = new ResponseDTO();
         try {
 
-            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter();
+            DateTimeFormatter formatter = CommonUtilities.getDateTimeFormatter(CommonConstants.YYYY_MM_dd_HH_MM_SS);
             ValidatorDTO validateIncome = isValidateIncome(incomeDTO, formatter);
             if (validateIncome.isStatus()) {
                 log.warn("IncomeServiceImpl.addIncome Method : {}", MessageConstants.VALIDATION_FAILED);
@@ -86,6 +91,94 @@ public class IncomeServiceImpl implements IncomeService {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setTimestamp(LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    /**
+     * The method provide all incomes by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<IncomeResponseDTO> getIncomesByUserId(Integer userId) {
+        log.info("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.ACCESSED);
+        IncomeResponseDTO response = new IncomeResponseDTO();
+
+        FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
+        LocalDateTime fromDate = fromToDate.getFromDate();
+        LocalDateTime toDate = fromToDate.getToDate();
+
+        List<IncomeDTOI> allIncomes = incomeRepository
+                .findByUserUserIdAndIncomeDateBetweenOrderByIncomeIdDesc(userId, fromDate, toDate);
+
+        DateTimeFormatter formatter = getDateTimeFormatter(YYYY_LLL_dd_HH_MM);
+
+        double totalIncome = allIncomes.stream()
+                .mapToDouble(IncomeDTOI::getIncomeAmount)
+                .sum();
+
+        List<IncomeDTO> incomeList = new ArrayList<>();
+        allIncomes.forEach(income -> {
+            IncomeDTO buildIncome = IncomeDTO.builder()
+                    .incomeId(income.getIncomeId())
+                    .incomeDetails(income.getIncomeDetails())
+                    .incomeAmount(income.getIncomeAmount())
+                    .incomeDate(convertLocalDateTimeToString(income.getIncomeDate(), formatter))
+                    .build();
+            incomeList.add(buildIncome);
+        });
+
+        if (allIncomes.isEmpty()) {
+            log.warn("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
+            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
+            response.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage(MessageConstants.FOUND_INCOMES);
+        response.setTotalAmount(formatDoubleToStringTwoDecimalPoint(totalIncome));
+        response.setDetails(incomeList);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FOUND).body(response);
+    }
+
+    /**
+     * The method delete an income by income id
+     *
+     * @param incomeId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @Override
+    public ResponseEntity<ResponseDTO> removeIncomeByUserId(Long incomeId) {
+
+        log.info("IncomeImpl.removeIncomeByUserId Method : {}", MessageConstants.ACCESSED);
+        ResponseDTO responseDTO = new ResponseDTO();
+        boolean existsId = incomeRepository.existsById(incomeId);
+        if (!existsId) {
+            log.warn("IncomeImpl.removeIncomeByUserId Method : {}", MessageConstants.DOES_NOT_FOUND_INCOME_FOR_REMOVING);
+            responseDTO.setMessage(MessageConstants.DOES_NOT_FOUND_INCOME_FOR_REMOVING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        }
+
+        try {
+            Income income = incomeRepository.findById(incomeId).orElse(null);
+            incomeRepository.deleteByIncomeId(incomeId);
+            responseDTO.setMessage(MessageConstants.SUCCESSFULLY_DELETED);
+            responseDTO.setDetails(income.getIncomeDetails());
+            responseDTO.setStatus(HttpStatus.OK);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.ok(responseDTO);
+        } catch (RuntimeException exception) {
+            log.error("IncomeServiceImpl.removeIncomeByUserId Method : {}", exception.getMessage());
+            responseDTO.setMessage(MessageConstants.FAILED_DELETING);
+            responseDTO.setStatus(HttpStatus.BAD_REQUEST);
+            responseDTO.setTimestamp(LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
 
