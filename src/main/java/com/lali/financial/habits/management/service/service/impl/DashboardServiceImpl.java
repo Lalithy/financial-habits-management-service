@@ -9,7 +9,7 @@ package com.lali.financial.habits.management.service.service.impl;
  **/
 
 import com.lali.financial.habits.management.service.constants.MessageConstants;
-import com.lali.financial.habits.management.service.dto.BudgeExpenseDTO;
+import com.lali.financial.habits.management.service.dto.ExpensePercentageDTO;
 import com.lali.financial.habits.management.service.dto.ExpensesStatisticsDTO;
 import com.lali.financial.habits.management.service.dto.FromToDateDTO;
 import com.lali.financial.habits.management.service.dto.ResponseDTO;
@@ -53,7 +53,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info("DashboardServiceImpl.getExpensesChartDataByUserId Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
-        List<BudgeExpenseDTO> budgetExpenseList = new ArrayList<>();
+        List<ExpensePercentageDTO> budgetExpenseList = new ArrayList<>();
 
         FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
         LocalDateTime fromDate = fromToDate.getFromDate();
@@ -63,8 +63,8 @@ public class DashboardServiceImpl implements DashboardService {
         List<BudgetCategoryDTOI> allBudgetCategories = budgetCategoryRepository.findBudgetCategoriesByUserId(userId);
 
         allBudgetCategories.forEach(budgetCategory -> {
-            BudgeExpenseDTO budgeExpense = getBudgeExpense(allExpenses, budgetCategory);
-            budgetExpenseList.add(budgeExpense);
+            ExpensePercentageDTO expensePercentage = getExpensePercentage(allExpenses, budgetCategory);
+            budgetExpenseList.add(expensePercentage);
         });
 
         response.setMessage(MessageConstants.FOUND_EXPENSES);
@@ -80,23 +80,28 @@ public class DashboardServiceImpl implements DashboardService {
      *
      * @param allExpenses
      * @param budgetCategory
-     * @return BudgeExpenseDTO
+     * @return ExpensePercentageDTO
      * @author Lali..
      */
-    private static BudgeExpenseDTO getBudgeExpense(List<ExpenseDTOI> allExpenses, BudgetCategoryDTOI budgetCategory) {
+    private ExpensePercentageDTO getExpensePercentage(List<ExpenseDTOI> allExpenses, BudgetCategoryDTOI budgetCategory) {
         log.info("DashboardServiceImpl.getBudgeExpense Method : {}", MessageConstants.ACCESSED);
-        BudgeExpenseDTO budgeExpenseDTO = new BudgeExpenseDTO();
-        budgeExpenseDTO.setBudgetCategory(budgetCategory.getBudgetCategoryName());
+        ExpensePercentageDTO expensePercentageDTO = new ExpensePercentageDTO();
+        expensePercentageDTO.setBudgetCategory(budgetCategory.getBudgetCategoryName());
         AtomicReference<Double> expenseAmount = new AtomicReference<>(0.0);
-        budgeExpenseDTO.setAmount(0.0);
+        expensePercentageDTO.setExpensePercentage(0.0);
+
+        double totalExpenses = getTotalExpenses(allExpenses);
+
         allExpenses.forEach(expense -> {
             if (Objects.equals(budgetCategory.getBudgetCategoryId(),
                     expense.getBudgetCategory().getBudgetCategoryId())) {
                 expenseAmount.updateAndGet(value -> value + expense.getExpenseAmount());
-                budgeExpenseDTO.setAmount(expenseAmount.get());
+                double percentageExpense = calculatePercentage(expenseAmount.get(), totalExpenses);
+                expensePercentageDTO.setExpensePercentage(percentageExpense);
             }
         });
-        return budgeExpenseDTO;
+
+        return expensePercentageDTO;
     }
 
     /**
@@ -211,13 +216,13 @@ public class DashboardServiceImpl implements DashboardService {
     /**
      * The method provide total expense by expense list
      *
-     * @param tempExpenseList
+     * @param expenseList
      * @return double
      * @author Lali..
      */
-    private double getTotalExpenses(List<ExpenseDTOI> tempExpenseList) {
+    private double getTotalExpenses(List<ExpenseDTOI> expenseList) {
         log.info("DashboardServiceImpl.getTotalExpenses Method : {}", MessageConstants.ACCESSED);
-        return tempExpenseList.stream()
+        return expenseList.stream()
                 .mapToDouble(ExpenseDTOI::getExpenseAmount)
                 .sum();
     }

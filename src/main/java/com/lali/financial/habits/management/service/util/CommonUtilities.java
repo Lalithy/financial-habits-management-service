@@ -168,4 +168,18 @@ public class CommonUtilities {
                 .toDate(toDate)
                 .build();
     }
+
+    /**
+     * The method calculate percentage
+     *
+     * @param obtained
+     * @param total
+     * @return double
+     * @author Lali..
+     */
+    public static double calculatePercentage(double obtained, double total) {
+        log.info("CommonUtilities.calculatePercentage Method : {}", ACCESSED);
+        return obtained * 100 / total;
+    }
 }
+
