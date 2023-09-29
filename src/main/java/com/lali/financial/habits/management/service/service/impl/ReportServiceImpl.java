@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.lali.financial.habits.management.service.util.CommonUtilities.getFromAndToDateByMonth;
+import static com.lali.financial.habits.management.service.util.CommonUtilities.getDatesByMonthAndYear;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +52,10 @@ public class ReportServiceImpl implements ReportService {
         log.info("ReportServiceImpl.getExpenseDetailReport Method : {}", MessageConstants.ACCESSED);
         ResponseDTO response = new ResponseDTO();
 
-        FromToDateDTO fromToDate = getFromAndToDateByMonth(month);
+        LocalDate localDate = LocalDate.now();
+        int currentYear = localDate.getYear();
+
+        FromToDateDTO fromToDate = getDatesByMonthAndYear(currentYear, month);
         LocalDateTime fromDate = fromToDate.getFromDate();
         LocalDateTime toDate = fromToDate.getToDate();
 

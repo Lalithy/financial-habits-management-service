@@ -112,7 +112,7 @@ public class CommonUtilities {
         LocalDate localDate = LocalDate.now();
 
         LocalDateTime fromDate = LocalDateTime
-                .of(LocalDate.of(localDate.getYear(), LocalDate.now().getMonth(), 1), LocalTime.of(0, 0, 0));
+                .of(LocalDate.of(localDate.getYear(), localDate.getMonth(), 1), LocalTime.of(0, 0, 0));
         LocalDateTime toDate = LocalDateTime.now();
 
         return FromToDateDTO.builder()
@@ -122,18 +122,18 @@ public class CommonUtilities {
     }
 
     /**
-     * The method provide 1st of month to today fromDate & toDate
+     * The method provide "from date" and "to date" by provided year and month
      *
+     * @param year
+     * @param month
      * @return FromToDateDTO
      * @author Lali..
      */
-    public static FromToDateDTO getFromAndToDateByMonth(Integer month) {
-        log.info("CommonUtilities.getFromAndToDateByMonth Method : {}", ACCESSED);
-
-        LocalDate localDate = LocalDate.now();
+    public static FromToDateDTO getDatesByMonthAndYear(Integer year, Integer month) {
+        log.info("CommonUtilities.getDatesByMonthAndYear Method : {}", ACCESSED);
 
         LocalDateTime fromDate = LocalDateTime
-                .of(LocalDate.of(localDate.getYear(), month, 1), LocalTime.of(0, 0, 0));
+                .of(LocalDate.of(year, month, 1), LocalTime.of(0, 0, 0));
 
         YearMonth yearMonth = YearMonth.from(fromDate);
         LocalDate endOfMonth = yearMonth.atEndOfMonth();
@@ -155,8 +155,8 @@ public class CommonUtilities {
      * @return FromToDateDTO
      * @author Lali..
      */
-    public static FromToDateDTO getFromAndToDateByMonthAndYear(Integer year, Integer month) {
-        log.info("CommonUtilities.getFromAndToDateByMonth Method : {}", ACCESSED);
+    public static FromToDateDTO getDatesToTodayByMonthAndYear(Integer year, Integer month) {
+        log.info("CommonUtilities.getDatesToTodayByMonthAndYear Method : {}", ACCESSED);
 
         LocalDateTime fromDate = LocalDateTime
                 .of(LocalDate.of(year, month, 1), LocalTime.of(0, 0, 0));

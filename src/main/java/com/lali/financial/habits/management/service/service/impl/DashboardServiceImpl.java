@@ -132,7 +132,7 @@ public class DashboardServiceImpl implements DashboardService {
         int lastSixMonthYear = yearMonth.minusMonths(6).getYear();
         int lastSixMonth = yearMonth.minusMonths(6).getMonthValue();
 
-        FromToDateDTO fromToDate = getFromAndToDateByMonthAndYear(lastSixMonthYear, lastSixMonth);
+        FromToDateDTO fromToDate = getDatesToTodayByMonthAndYear(lastSixMonthYear, lastSixMonth);
         LocalDateTime fromDate = fromToDate.getFromDate();
         LocalDateTime toDate = fromToDate.getToDate();
 
@@ -142,8 +142,9 @@ public class DashboardServiceImpl implements DashboardService {
             YearMonth date = YearMonth.now().minusMonths(i);
             String monthName = date.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
             int monthValue = date.getMonthValue();
+            int year = date.getYear();
 
-            FromToDateDTO tempFromToDate = getFromAndToDateByMonth(monthValue);
+            FromToDateDTO tempFromToDate = getDatesByMonthAndYear(year, monthValue);
             List<ExpenseDTOI> tempExpenseList = getExpenseByMonth(allExpensesLastSixMonths, tempFromToDate);
             double totalExpenses = getTotalExpenses(tempExpenseList);
             ExpensesStatisticsDTO expense = getExpensesStatistics(monthName, totalExpenses);
