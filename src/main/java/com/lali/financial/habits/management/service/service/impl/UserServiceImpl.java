@@ -9,13 +9,8 @@ package com.lali.financial.habits.management.service.service.impl;
  **/
 
 
-import static com.lali.financial.habits.management.service.constants.MessageConstants.*;
-import com.lali.financial.habits.management.service.dto.UserDTO;
+import com.lali.financial.habits.management.service.dto.*;
 import com.lali.financial.habits.management.service.dto.dtoi.UserDTOI;
-import com.lali.financial.habits.management.service.dto.RequestUserDTO;
-import com.lali.financial.habits.management.service.dto.RequestUserLoginDTO;
-import com.lali.financial.habits.management.service.dto.ResponseDTO;
-import com.lali.financial.habits.management.service.dto.ValidatorDTO;
 import com.lali.financial.habits.management.service.entity.BudgetCategory;
 import com.lali.financial.habits.management.service.entity.GuestUser;
 import com.lali.financial.habits.management.service.repository.GuestUserRepository;
@@ -31,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.lali.financial.habits.management.service.constants.MessageConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -110,7 +107,9 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl.loginUser Method : {}", ACCESSED);
         UserDTOI userByEmailAndIsActive = userRepository.findGuestUserByEmailAndIsActive(userDTO.getEmail(), true);
         ResponseDTO responseDTO = new ResponseDTO();
-        if (userByEmailAndIsActive.getPassword().equals(userDTO.getPassword())) {
+        if (userByEmailAndIsActive != null
+                && userByEmailAndIsActive.getPassword().equals(userDTO.getPassword())
+                && userByEmailAndIsActive.getEmail().equals(userDTO.getEmail())) {
             Integer userId = userByEmailAndIsActive.getUserId();
             String email = userByEmailAndIsActive.getEmail();
 

@@ -30,9 +30,17 @@ public interface UserService {
      *
      * @param userDTO -> {email, password}
      * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
      */
     ResponseEntity<ResponseDTO> loginUser(RequestUserLoginDTO userDTO);
 
+    /**
+     * The method provide a user by user id¿
+     *
+     * @param userId
+     * @return GuestUser
+     * @author Lali..
+     */
     GuestUser findUserById(Integer userId);
 
 }
