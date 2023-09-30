@@ -130,12 +130,7 @@ public class IncomeServiceImpl implements IncomeService {
             incomeList.add(buildIncome);
         });
 
-        if (allIncomes.isEmpty()) {
-            log.warn("IncomesImpl.getIncomesByUserId Method : {}", MessageConstants.INCOMES_IS_EMPTY);
-            response.setMessage(MessageConstants.CAN_NOT_FIND_INCOMES);
-            response.setTimestamp(LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+
 
         response.setMessage(MessageConstants.FOUND_INCOMES);
         response.setTotalAmount(formatDoubleToStringTwoDecimalPoint(totalIncome));
@@ -199,7 +194,7 @@ public class IncomeServiceImpl implements IncomeService {
 
         if (isInvalidBudgetCategory) {
             validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DETAILS);
+            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DESCRIPTION);
             return validatorDTO;
         }
         if (incomeDTO.getIncomeAmount() <= 0) {

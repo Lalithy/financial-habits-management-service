@@ -23,13 +23,23 @@ import java.util.List;
 public interface SavingsRepository extends JpaRepository<Savings, Long> {
 
     /**
-     * The method provide expenses by user id
+     * The method provide savings by user id
      *
      * @param userId
      * @return List<Expense>
      * @author Lali..
      */
     List<SavingsDTOI> findByUserUserIdOrderBySavingsIdDesc(Integer userId);
+
+    /**
+     * The method provide savings by user id & between two dates
+     *
+     * @param userId
+     * @return List<Expense>
+     * @author Lali..
+     */
+    List<SavingsDTOI> findByUserUserIdAndSavingsDateBetweenOrderBySavingsIdDesc(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
+
 
     /**
      * The method delete saving by savings id

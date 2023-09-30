@@ -122,14 +122,6 @@ public class ExpenseServiceImpl implements ExpenseService {
         ResponseDTO response = new ResponseDTO();
         List<ExpenseDTOI> allExpenses = expenseRepository.findByUserUserIdOrderByExpenseIdDesc(userId);
 
-        if (allExpenses.isEmpty()) {
-            log.warn("ExpenseImpl.getExpenseByUserId Method : {}", MessageConstants.EXPENSES_IS_EMPTY);
-            response.setMessage(MessageConstants.CAN_NOT_FIND_EXPENSES);
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.setTimestamp(LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-
         FromToDateDTO fromToDate = getFirstOfCurrentMonthToCurrentDateTime();
         LocalDateTime fromDate = fromToDate.getFromDate();
         LocalDateTime toDate = fromToDate.getToDate();

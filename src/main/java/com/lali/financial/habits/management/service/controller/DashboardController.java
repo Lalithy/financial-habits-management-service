@@ -55,4 +55,17 @@ public class DashboardController {
         return dashboardService.getExpensesStatisticsLastSixMonthsByUserId(userId);
     }
 
+    /**
+     * The API provide details of statistics for last six months by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    @GetMapping("/statistics")
+    public ResponseEntity<ResponseDTO> getStatisticsLastSixMonthsByUserId(@Valid @RequestParam Integer userId) {
+        log.info("DashboardController.getStatisticsLastSixMonthsByUserId API : {}", MessageConstants.ACCESSED);
+        return dashboardService.getStatisticsLastSixMonthsByUserId(userId);
+    }
+
 }
