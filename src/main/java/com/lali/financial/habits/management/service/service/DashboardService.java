@@ -30,4 +30,13 @@ public interface DashboardService {
      * @author Lali..
      */
     ResponseEntity<ResponseDTO> getExpensesStatisticsLastSixMonthsByUserId(Integer userId);
+
+    /**
+     * The method provide details of statistics for last six months by user id
+     *
+     * @param userId
+     * @return ResponseEntity<ResponseDTO>
+     * @author Lali..
+     */
+    ResponseEntity<ResponseDTO> getStatisticsLastSixMonthsByUserId(Integer userId);
 }

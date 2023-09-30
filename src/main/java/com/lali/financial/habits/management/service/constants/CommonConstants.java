@@ -13,4 +13,7 @@ public class CommonConstants {
 
     public static final String YYYY_MM_dd_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
     public static final String YYYY_LLL_dd_HH_MM = "yyyy-LLL-dd HH:mm";
+    public static final String EXPENSES = "Expenses";
+    public static final String INCOMES = "Incomes";
+    public static final String SAVINGS = "Savings";
 }
