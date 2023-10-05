@@ -192,14 +192,14 @@ public class IncomeServiceImpl implements IncomeService {
         boolean isValidIncomeDate = !validator.isValid(incomeDTO.getIncomeDate());
         ValidatorDTO validatorDTO = new ValidatorDTO();
 
-        if (isInvalidBudgetCategory) {
-            validatorDTO.setStatus(true);
-            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DESCRIPTION);
-            return validatorDTO;
-        }
-        if (incomeDTO.getIncomeAmount() <= 0) {
+
+        if (incomeDTO.getIncomeAmount() == null || incomeDTO.getIncomeAmount() <= 0) {
             validatorDTO.setStatus(true);
             validatorDTO.setMessage(MessageConstants.INVALID_INCOME_AMOUNT);
+            return validatorDTO;
+        } else if (isInvalidBudgetCategory) {
+            validatorDTO.setStatus(true);
+            validatorDTO.setMessage(MessageConstants.INVALID_INCOME_DESCRIPTION);
             return validatorDTO;
         }
 
